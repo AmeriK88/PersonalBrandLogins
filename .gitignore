@@ -1,0 +1,33 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+
+# --- Entornos virtuales ---
+venv/
+.env/
+.env.bak
+
+# --- Django / Base de datos ---
+db.sqlite3
+*.sqlite3
+
+# --- Archivos estáticos generados (si usas collectstatic) ---
+staticfiles/
+static_root/
+
+# --- Media subida por usuarios ---
+media/
+
+# --- Archivos de configuración sensibles ---
+.env
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.swp
+*.swo

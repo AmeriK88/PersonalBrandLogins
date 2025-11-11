@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+{% load highlight_extras %} {# ya no es obligatorio, pero por si luego quieres volver a usar embeds #}
+
+{% block title %}Highlights · Greg Logins Jr{% endblock %}
+
+{% block content %}
+<section class="page-section py-5">
+    <div class="container">
+        <p class="section-eyebrow mb-2">HIGHLIGHTS</p>
+        <h1 class="section-title mb-4">Media & Highlights</h1>
+        <p class="section-lead mb-5 text-secondary">
+            A look into Greg's journey through basketball — from game action and training sessions to interviews and media appearances.
+        </p>
+
+        <!-- PHOTOS -->
+        <div class="mb-5">
+            <h2 class="about-subtitle mb-4">Photos</h2>
+            <div class="row g-4">
+                {% for photo in photos %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="highlight-card h-100">
+                        {% if photo.image %}
+                            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="highlight-image img-fluid">
+                        {% endif %}
+                        <div class="p-3">
+                            <p class="fw-bold mb-1">{{ photo.title }}</p>
+                            {% if photo.description %}
+                                <p class="small mb-3 text-secondary">{{ photo.description }}</p>
+                            {% endif %}
+
+                            {% if photo.video_url or photo.press_link %}
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if photo.video_url %}
+                                    <a href="{{ photo.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm">
+                                        Watch video
+                                    </a>
+                                {% endif %}
+                                {% if photo.press_link %}
+                                    <a href="{{ photo.press_link }}" target="_blank" class="btn btn-outline-gold btn-sm">
+                                        Read article
+                                    </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No photos yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- VIDEOS -->
+        <div class="mb-5">
+            <h2 class="about-subtitle mb-4">Videos</h2>
+            <div class="row g-4">
+                {% for video in videos %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="highlight-card h-100">
+                        {% if video.image %}
+                            <img src="{{ video.image.url }}" alt="{{ video.title }}" class="highlight-image img-fluid">
+                        {% endif %}
+                        <div class="p-3">
+                            <p class="fw-bold mb-1">{{ video.title }}</p>
+                            {% if video.description %}
+                                <p class="small mb-3 text-secondary">{{ video.description }}</p>
+                            {% endif %}
+
+                            {% if video.video_url or video.press_link %}
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if video.video_url %}
+                                    <a href="{{ video.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm">
+                                        Watch video
+                                    </a>
+                                {% endif %}
+                                {% if video.press_link %}
+                                    <a href="{{ video.press_link }}" target="_blank" class="btn btn-outline-gold btn-sm">
+                                        Read article
+                                    </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No videos yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- PRESS -->
+        <div>
+            <h2 class="about-subtitle mb-4">Press & Interviews</h2>
+            <div class="row g-4">
+                {% for p in press %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="highlight-card h-100">
+                        {% if p.image %}
+                            <img src="{{ p.image.url }}" alt="{{ p.title }}" class="highlight-image img-fluid">
+                        {% endif %}
+                        <div class="p-3">
+                            <p class="fw-bold mb-1">{{ p.title }}</p>
+                            {% if p.description %}
+                                <p class="small mb-3 text-secondary">{{ p.description }}</p>
+                            {% endif %}
+
+                            {% if p.video_url or p.press_link %}
+                            <div class="d-flex flex-wrap gap-2">
+                                {% if p.video_url %}
+                                    <a href="{{ p.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm">
+                                        Watch interview
+                                    </a>
+                                {% endif %}
+                                {% if p.press_link %}
+                                    <a href="{{ p.press_link }}" target="_blank" class="btn btn-outline-gold btn-sm">
+                                        Read article
+                                    </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No press items yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

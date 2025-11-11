@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} · Blog · Greg Logins Jr{% endblock %}
+
+{% block content %}
+<section class="page-section blog-detail-section py-5">
+    <div class="container">
+
+        <!-- Breadcrumb / categoría -->
+        <p class="section-eyebrow mb-3">
+            <a href="{% url 'blog:list' %}" class="blog-breadcrumb-link">BLOG</a>
+            · {{ post.get_category_display }}
+        </p>
+
+        <div class="row g-5">
+            <!-- Columna principal: artículo -->
+            <div class="col-lg-8">
+                <article class="blog-article">
+                    <header class="mb-4">
+                        <h1 class="blog-article-title mb-2">
+                            {{ post.title }}
+                        </h1>
+                        <p class="blog-card-meta small mb-0">
+                            {{ post.created_at|date:"F d, Y" }}
+                        </p>
+                    </header>
+
+                    {% if post.cover_image %}
+                    <div class="blog-cover-wrapper mb-4">
+                        <img src="{{ post.cover_image.url }}"
+                             alt="{{ post.title }}"
+                             class="blog-cover-image img-fluid">
+                    </div>
+                    {% endif %}
+
+                    <div class="blog-content">
+                        {{ post.content|linebreaks }}
+                    </div>
+                </article>
+            </div>
+
+            <!-- Columna lateral: meta + redes -->
+            <div class="col-lg-4">
+                <aside class="blog-sidebar">
+                    <div class="blog-sidebar-card mb-4">
+                        <h2 class="blog-sidebar-title">Article Details</h2>
+                        <ul class="list-unstyled small mb-0">
+                            <li class="mb-2">
+                                <span class="about-label">Category</span><br>
+                                {{ post.get_category_display }}
+                            </li>
+                            <li class="mb-2">
+                                <span class="about-label">Published</span><br>
+                                {{ post.created_at|date:"M d, Y" }}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="blog-sidebar-card">
+                        <h2 class="blog-sidebar-title">Share</h2>
+                        <p class="small text-muted mb-3">
+                            Share this article with players, parents or coaches who might benefit from it.
+                        </p>
+                        <div class="d-flex gap-2">
+                            <a href="#" class="social-icon-circle" aria-label="Share on X / Twitter">
+                                <i class="bi bi-twitter-x"></i>
+                            </a>
+                            <a href="#" class="social-icon-circle" aria-label="Share on Instagram">
+                                <i class="bi bi-instagram"></i>
+                            </a>
+                            <a href="#" class="social-icon-circle" aria-label="Share on LinkedIn">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'blog:list' %}" class="btn btn-outline-gold btn-sm">
+                            ← Back to Blog
+                        </a>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

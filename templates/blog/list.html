@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Blog · Greg Logins Jr{% endblock %}
+
+{% block content %}
+<section class="page-section py-5">
+    <div class="container">
+        <p class="section-eyebrow mb-2">BLOG</p>
+        <h1 class="section-title mb-4">Insights from the Court & Classroom</h1>
+        <p class="section-lead mb-5">
+            Reflections on growth, discipline, and balance — the journey of a student–athlete, coach, mentor, husband, and father.
+        </p>
+
+        <div class="row g-4">
+            {% for post in posts %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{% url 'blog:detail' post.slug %}" class="text-decoration-none text-reset">
+                    <article class="blog-card h-100">
+                        {% if post.cover_image %}
+                        <div class="blog-card-image-wrapper">
+                            <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="blog-card-image">
+                        </div>
+                        {% endif %}
+                        <div class="blog-card-body p-4">
+                            <p class="blog-card-category mb-2">
+                                {{ post.get_category_display }}
+                            </p>
+                            <h2 class="blog-card-title h5 mb-2">
+                                {{ post.title }}
+                            </h2>
+                            {% if post.excerpt %}
+                            <p class="small mb-3">{{ post.excerpt }}</p>
+                            {% endif %}
+                            <p class="blog-card-meta small mb-0">
+                                {{ post.created_at|date:"M d, Y" }}
+                            </p>
+                        </div>
+                    </article>
+                </a>
+            </div>
+            {% empty %}
+            <p>No posts published yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

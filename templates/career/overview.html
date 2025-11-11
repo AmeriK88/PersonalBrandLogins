@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Career · Greg Logins Jr{% endblock %}
+
+{% block content %}
+<section class="page-section py-5">
+    <div class="container">
+        <p class="section-eyebrow mb-2">CAREER</p>
+        <h1 class="section-title mb-4">From Sodus to the World</h1>
+        <p class="section-lead mb-5">
+            Greg Logins Jr built a 13-year professional basketball career across 9 countries after
+            an outstanding high school and college journey.
+        </p>
+
+        <!-- HIGH SCHOOL -->
+        <div class="mb-5">
+            <h2 class="about-subtitle mb-4">High School</h2>
+            <div class="row g-4">
+                {% for exp in high_school %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="experience-card p-0 h-100">
+                        {% if exp.image %}
+                        <div class="experience-image-wrapper">
+                            <img src="{{ exp.image.url }}" alt="{{ exp.team }}" class="experience-image img-fluid">
+                        </div>
+                        {% endif %}
+                        <div class="p-4">
+                            <h5 class="fw-bold">{{ exp.team }}</h5>
+                            <p class="mb-1 small text-muted">{{ exp.years }}</p>
+                            <p class="mb-2 text-secondary">{{ exp.league }}</p>
+                            {% if exp.achievements %}
+                            <p class="small text-secondary">{{ exp.achievements }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No high school records yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- COLLEGE -->
+        <div class="mb-5">
+            <h2 class="about-subtitle mb-4">College</h2>
+            <div class="row g-4">
+                {% for exp in college %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="experience-card p-0 h-100">
+                        {% if exp.image %}
+                        <div class="experience-image-wrapper">
+                            <img src="{{ exp.image.url }}" alt="{{ exp.team }}" class="experience-image img-fluid">
+                        </div>
+                        {% endif %}
+                        <div class="p-4">
+                            <h5 class="fw-bold">{{ exp.team }}</h5>
+                            <p class="mb-1 small text-muted">{{ exp.years }}</p>
+                            <p class="mb-2">{{ exp.league }}</p>
+                            {% if exp.achievements %}
+                            <p class="small text-secondary">{{ exp.achievements }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No college records yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- PROFESSIONAL -->
+        <div>
+            <h2 class="about-subtitle mb-4">Professional</h2>
+            <div class="row g-4">
+                {% for exp in professional %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="experience-card p-0 h-100">
+                        {% if exp.image %}
+                        <div class="experience-image-wrapper">
+                            <img src="{{ exp.image.url }}" alt="{{ exp.team }}" class="experience-image img-fluid">
+                        </div>
+                        {% endif %}
+                        <div class="p-4">
+                            <h5 class="fw-bold">{{ exp.team }}</h5>
+                            <p class="mb-1 small text-muted">{{ exp.years }} — {{ exp.country }}</p>
+                            <p class="mb-2">{{ exp.league }}</p>
+                            {% if exp.achievements %}
+                            <p class="small text-secondary">{{ exp.achievements }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No professional records yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

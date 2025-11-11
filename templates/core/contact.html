@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact · Greg Logins Jr{% endblock %}
+
+{% block content %}
+<section class="contact-hero position-relative">
+    <div class="overlay"></div>
+    <div class="container py-5 position-relative z-2 text-center text-lg-start">
+        <h1 class="display-5 fw-bold mb-3">Let’s Get in Touch</h1>
+        <p class="lead mb-0">For coaching inquiries, appearances, or collaborations, fill out the form below.</p>
+    </div>
+</section>
+
+<section class="contact-section py-5">
+    <div class="container">
+        <div class="row g-5 align-items-start">
+            
+            <!-- Contact Info -->
+            <div class="col-lg-5">
+                <h2 class="mb-4 fw-bold">Connect with Greg</h2>
+                <p class="mb-4 text-secondary">
+                    Whether you're a player, parent, or organization, Greg would love to hear from you.
+                </p>
+
+                <ul class="list-unstyled contact-info">
+                    <li><i class="bi bi-geo-alt-fill"></i> Sodus, New York</li>
+                    <li><i class="bi bi-envelope-fill"></i> <a href="mailto:gregloginsjr@gmail.com">loginsg00@gmail.com</a></li>
+                    <li><i class="bi bi-instagram"></i> <a href="https://www.instagram.com/gregloginsjr/" target="_blank">@gregloginsjr</a></li>
+                    <li><i class="bi bi-linkedin"></i> <a href="https://www.linkedin.com/in/gregloginsjr" target="_blank">LinkedIn Profile</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="col-lg-7">
+                {% if success %}
+                <div class="alert alert-success text-center mb-4">
+                    Your message has been sent successfully. Thank you for reaching out!
+                </div>
+                {% endif %}
+                
+                <form method="POST" class="contact-form card p-4 border-0 shadow-sm bg-dark">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                        </div>
+                        <div class="col-12">
+                            <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+                        </div>
+                        <div class="col-12">
+                            <textarea name="message" rows="5" class="form-control" placeholder="Your Message" required></textarea>
+                        </div>
+                        <div class="col-12 text-end mt-3">
+                            <button type="submit" class="btn btn-outline-gold px-5 py-2">
+                                SEND MESSAGE
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
