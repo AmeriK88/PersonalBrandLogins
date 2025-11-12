@@ -197,6 +197,35 @@ body {
     padding-left: 1rem;
 }
 
+/* STATS */
+.about-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.about-stat {
+    min-width: 110px;
+}
+
+.about-stat-number {
+    font-size: 1.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold-soft);
+}
+
+.about-stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+
+
 /* CARDS UNIFICADAS: CAREER / BLOG / HIGHLIGHTS */
 
 .experience-card,
@@ -265,7 +294,7 @@ body {
 }
 
 .highlight-overlay h5 {
-    color: #fff;
+    color: var(--text-main);
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
@@ -399,7 +428,7 @@ body {
 .contact-hero {
     background: radial-gradient(circle at center right, rgba(217, 164, 65, 0.2), transparent 70%),
                 url("../img/greg-contact-bg.webp") center/cover no-repeat;
-    color: #fff;
+    color: var(--text-main);
     position: relative;
     min-height: 40vh;
     display: flex;
@@ -416,7 +445,7 @@ body {
 
 .contact-section {
     background-color: #0d0d0d;
-    color: #fff;
+    color: var(--text-main);
 }
 
 .contact-info li {
@@ -444,7 +473,7 @@ body {
 .contact-form .form-control {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: var(--text-main);
     border-radius: 0.5rem;
     padding: 0.9rem 1rem;
     transition: all 0.3s ease;
@@ -565,6 +594,10 @@ body {
 @media (max-width: 767px) {
     .blog-article {
         padding: 1.5rem;
+    }
+
+    .about-stats {
+        justify-content: space-between;
     }
 }
 
