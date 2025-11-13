@@ -1,48 +1,59 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ post.title }} · Blog · Greg Logins Jr{% endblock %}
 
 {% block content %}
-<section class="page-section blog-detail-section py-5">
-    <div class="container">
+<section class="page-section blog-detail-section py-5 fade-in">
+    <!-- Narration -->
+    <audio id="about-narration" preload="auto" autoplay muted>
+        <source src="{% static 'audio/audio-narration.mp3' %}" type="audio/mpeg">
+        <source src="{% static 'audio/audio-narration.ogg' %}" type="audio/ogg">
+        <source src="{% static 'audio/audio-narration.m4a' %}" type="audio/mp4">
+        Your browser does not support the audio element.
+    </audio>
 
-        <!-- Breadcrumb / categoría -->
-        <p class="section-eyebrow mb-3">
+    <div class="container fade-up">
+        <!-- Botón de control -->
+        <button id="about-audio-toggle" class="btn btn-outline-gold btn-sm mt-3 fade-in" aria-pressed="false" aria-label="Play narration">
+            🔊 Play Narration
+        </button>
+
+        <!-- Breadcrumb -->
+        <p class="section-eyebrow mb-3 fade-in">
             <a href="{% url 'blog:list' %}" class="blog-breadcrumb-link">BLOG</a>
             · {{ post.get_category_display }}
         </p>
 
-        <div class="row g-5">
-            <!-- Columna principal: artículo -->
+        <div class="row g-5 fade-up">
+            <!-- Columna principal -->
             <div class="col-lg-8">
                 <article class="blog-article">
                     <header class="mb-4">
-                        <h1 class="blog-article-title mb-2">
+                        <h1 class="blog-article-title mb-2 fade-up">
                             {{ post.title }}
                         </h1>
-                        <p class="blog-card-meta small mb-0">
+                        <p class="blog-card-meta small mb-0 fade-in">
                             {{ post.created_at|date:"F d, Y" }}
                         </p>
                     </header>
 
                     {% if post.cover_image %}
-                    <div class="blog-cover-wrapper mb-4">
-                        <img src="{{ post.cover_image.url }}"
-                             alt="{{ post.title }}"
-                             class="blog-cover-image img-fluid">
+                    <div class="blog-cover-wrapper mb-4 fade-up">
+                        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="blog-cover-image img-fluid">
                     </div>
                     {% endif %}
 
-                    <div class="blog-content">
+                    <div class="blog-content fade-in">
                         {{ post.content|linebreaks }}
                     </div>
                 </article>
             </div>
 
-            <!-- Columna lateral: meta + redes -->
-            <div class="col-lg-4">
+            <!-- Sidebar -->
+            <div class="col-lg-4 fade-up">
                 <aside class="blog-sidebar">
-                    <div class="blog-sidebar-card mb-4">
+                    <div class="blog-sidebar-card mb-4 fade-in">
                         <h2 class="blog-sidebar-title">Article Details</h2>
                         <ul class="list-unstyled small mb-0">
                             <li class="mb-2">
@@ -56,7 +67,7 @@
                         </ul>
                     </div>
 
-                    <div class="blog-sidebar-card">
+                    <div class="blog-sidebar-card fade-in">
                         <h2 class="blog-sidebar-title">Share</h2>
                         <p class="small text-muted mb-3">
                             Share this article with players, parents or coaches who might benefit from it.
@@ -74,7 +85,38 @@
                         </div>
                     </div>
 
-                    <div class="mt-4">
+                    <!-- Recovery Reel -->
+                    <div class="blog-sidebar-card mt-4 fade-up">
+                        <h2 class="blog-sidebar-title">Recovery Reel</h2>
+                        <p class="small text-muted mb-3 fade-in">Moments from the comeback — rehab, sweat, belief.</p>
+
+                        <div id="recovery-reel"
+                            class="reel fade-up"
+                            data-interval="5500"
+                            data-sync-audio="about-narration">
+                            <img src="{% static 'img/recovery/recovery-00-0.webp' %}" alt="Rehab starts" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-00.webp' %}" alt="Rehab starts" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-01.webp' %}" alt="Rehab session 1" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-02.webp' %}" alt="Rehab session 2" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-03.webp' %}" alt="Gym strength work" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-04.webp' %}" alt="Court drills return" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-05.webp' %}" alt="After surgery" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-06.webp' %}" alt="Injury MRI" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-07.webp' %}" alt="Court practice" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-08.webp' %}" alt="Rehab session 3" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-09.webp' %}" alt="Doctors & Greg" class="reel-frame" loading="lazy">
+                        </div>
+
+                        <noscript>
+                            <div class="row g-2 mt-2">
+                                <div class="col-6"><img src="{% static 'img/recovery/recovery-01.webp' %}" class="img-fluid rounded" alt=""></div>
+                                <div class="col-6"><img src="{% static 'img/recovery/recovery-02.webp' %}" class="img-fluid rounded" alt=""></div>
+                                <div class="col-6"><img src="{% static 'img/recovery/recovery-03.webp' %}" class="img-fluid rounded" alt=""></div>
+                            </div>
+                        </noscript>
+                    </div>
+
+                    <div class="mt-4 fade-in">
                         <a href="{% url 'blog:list' %}" class="btn btn-outline-gold btn-sm">
                             ← Back to Blog
                         </a>
@@ -82,7 +124,11 @@
                 </aside>
             </div>
         </div>
-
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/core/blog-audio.js' %}" defer></script>
+  <script src="{% static 'js/core/recovery-reel.js' %}" defer></script>
 {% endblock %}

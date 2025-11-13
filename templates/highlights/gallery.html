@@ -1,27 +1,26 @@
 {% extends "base.html" %}
 {% load static %}
-{% load highlight_extras %} {# ya no es obligatorio, pero por si luego quieres volver a usar embeds #}
 
 {% block title %}Highlights · Greg Logins Jr{% endblock %}
 
 {% block content %}
 <section class="page-section py-5">
     <div class="container">
-        <p class="section-eyebrow mb-2">HIGHLIGHTS</p>
-        <h1 class="section-title mb-4">Media & Highlights</h1>
-        <p class="section-lead mb-5 text-secondary">
+        <p class="section-eyebrow mb-2 fade-in">HIGHLIGHTS</p>
+        <h1 class="section-title mb-4 fade-up">Media & Highlights</h1>
+        <p class="section-lead mb-5 text-secondary fade-up">
             A look into Greg's journey through basketball — from game action and training sessions to interviews and media appearances.
         </p>
 
         <!-- PHOTOS -->
         <div class="mb-5">
-            <h2 class="about-subtitle mb-4">Photos</h2>
+            <h2 class="about-subtitle mb-4 fade-in">Photos</h2>
             <div class="row g-4">
                 {% for photo in photos %}
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-4 fade-up">
                     <div class="highlight-card h-100">
                         {% if photo.image %}
-                            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="highlight-image img-fluid">
+                            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="highlight-image img-fluid fade-in">
                         {% endif %}
                         <div class="p-3">
                             <p class="fw-bold mb-1">{{ photo.title }}</p>
@@ -54,13 +53,13 @@
 
         <!-- VIDEOS -->
         <div class="mb-5">
-            <h2 class="about-subtitle mb-4">Videos</h2>
+            <h2 class="about-subtitle mb-4 fade-in">Videos</h2>
             <div class="row g-4">
                 {% for video in videos %}
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-4 fade-up">
                     <div class="highlight-card h-100">
                         {% if video.image %}
-                            <img src="{{ video.image.url }}" alt="{{ video.title }}" class="highlight-image img-fluid">
+                            <img src="{{ video.image.url }}" alt="{{ video.title }}" class="highlight-image img-fluid fade-in">
                         {% endif %}
                         <div class="p-3">
                             <p class="fw-bold mb-1">{{ video.title }}</p>
@@ -93,13 +92,13 @@
 
         <!-- PRESS -->
         <div>
-            <h2 class="about-subtitle mb-4">Press & Interviews</h2>
+            <h2 class="about-subtitle mb-4 fade-in">Press & Interviews</h2>
             <div class="row g-4">
                 {% for p in press %}
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-4 fade-up">
                     <div class="highlight-card h-100">
                         {% if p.image %}
-                            <img src="{{ p.image.url }}" alt="{{ p.title }}" class="highlight-image img-fluid">
+                            <img src="{{ p.image.url }}" alt="{{ p.title }}" class="highlight-image img-fluid fade-in">
                         {% endif %}
                         <div class="p-3">
                             <p class="fw-bold mb-1">{{ p.title }}</p>
