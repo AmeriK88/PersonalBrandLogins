@@ -28,6 +28,7 @@ This platform showcases his **career**, **media highlights**, **blog**, and **pe
 
 ```
 project/
+│── config/  
 │── core/            # Base templates, global utilities, audio scripts
 │── blog/            # Blog: categories, posts, slugs, share system
 │── highlights/      # Photos, videos, press gallery
