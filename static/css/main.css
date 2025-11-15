@@ -68,6 +68,18 @@ body{
   }
 }
 
+.pwa-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1080; /* un pelín más que la navbar si hace falta */
+  background: #000; /* o el mismo gradiente que la navbar */
+  color: #f5f5f5;
+  padding: .4rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.08); /* solo una línea */
+}
+
 /* NAVBAR */
 .main-navbar{
     padding-top:1.5rem;
