@@ -20,6 +20,8 @@ db.sqlite3
 staticfiles/
 static_root/
 static/img/
+static/video/
+static/audio/
 
 # --- Media subida por usuarios ---
 media/

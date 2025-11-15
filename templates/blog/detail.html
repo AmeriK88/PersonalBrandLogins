@@ -67,23 +67,50 @@
                         </ul>
                     </div>
 
-                    <div class="blog-sidebar-card fade-in">
-                        <h2 class="blog-sidebar-title">Share</h2>
-                        <p class="small text-secondary mb-3">
-                            Share this article with players, parents or coaches who might benefit from it.
-                        </p>
-                        <div class="d-flex gap-2">
-                            <a href="#" class="social-icon-circle" aria-label="Share on X / Twitter">
-                                <i class="bi bi-twitter-x"></i>
-                            </a>
-                            <a href="#" class="social-icon-circle" aria-label="Share on Instagram">
-                                <i class="bi bi-instagram"></i>
-                            </a>
-                            <a href="#" class="social-icon-circle" aria-label="Share on LinkedIn">
-                                <i class="bi bi-linkedin"></i>
-                            </a>
-                        </div>
-                    </div>
+<div class="blog-sidebar-card fade-in">
+    <h2 class="blog-sidebar-title">Share</h2>
+    <p class="small text-secondary mb-3">
+        Share this article with players, parents or coaches who might benefit from it.
+    </p>
+    <div class="d-flex gap-2">
+        {# Facebook #}
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url|urlencode }}"
+           target="_blank"
+           rel="noopener"
+           class="social-icon-circle"
+           aria-label="Share on Facebook">
+            <i class="bi bi-facebook"></i>
+        </a>
+
+        {# LinkedIn #}
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url|urlencode }}"
+           target="_blank"
+           rel="noopener"
+           class="social-icon-circle"
+           aria-label="Share on LinkedIn">
+            <i class="bi bi-linkedin"></i>
+        </a>
+
+        {# Share nativo (móvil) #}
+        <button type="button"
+                class="social-icon-circle js-share-native"
+                data-url="{{ share_url }}"
+                data-title="{{ post.title }}"
+                aria-label="Share this article">
+            <i class="bi bi-share"></i>
+        </button>
+
+        {# Copiar enlace #}
+        <button type="button"
+                class="social-icon-circle js-share-copy"
+                data-url="{{ share_url }}"
+                aria-label="Copy article link">
+            <i class="bi bi-link-45deg"></i>
+        </button>
+    </div>
+</div>
+
+
 
                     <!-- Recovery Reel -->
                     <div class="blog-sidebar-card mt-4 fade-up">
@@ -94,6 +121,8 @@
                             class="reel fade-up"
                             data-interval="5500"
                             data-sync-audio="about-narration">
+                            <img src="{% static 'img/recovery/life.webp' %}" alt="Liefe´s test" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/life.webp' %}" alt="Life´s test" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-00-0.webp' %}" alt="Rehab starts" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-00.webp' %}" alt="Rehab starts" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-01.webp' %}" alt="Rehab session 1" class="reel-frame" loading="lazy">
@@ -102,9 +131,57 @@
                             <img src="{% static 'img/recovery/recovery-04.webp' %}" alt="Court drills return" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-05.webp' %}" alt="After surgery" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-06.webp' %}" alt="Injury MRI" class="reel-frame" loading="lazy">
-                            <img src="{% static 'img/recovery/recovery-07.webp' %}" alt="Court practice" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/recovery-09.webp' %}" alt="Rehab session 3" class="reel-frame" loading="lazy">
+                                <video
+                                class="reel-frame"
+                                src="{% static 'video/recovery-1.mp4' %}"
+                                muted
+                                playsinline
+                                webkit-playsinline
+                                preload="metadata">
+                                Your browser does not support the video tag.
+                                </video>
                             <img src="{% static 'img/recovery/recovery-08.webp' %}" alt="Rehab session 3" class="reel-frame" loading="lazy">
-                            <img src="{% static 'img/recovery/recovery-09.webp' %}" alt="Doctors & Greg" class="reel-frame" loading="lazy">
+                                <video
+                                class="reel-frame"
+                                src="{% static 'video/recovery-2.mp4' %}"
+                                muted
+                                playsinline
+                                webkit-playsinline
+                                preload="metadata">
+                                </video>
+                                <video
+                                class="reel-frame"
+                                src="{% static 'video/recovery-3.mp4' %}"
+                                muted
+                                playsinline
+                                webkit-playsinline
+                                preload="metadata">
+                                </video>
+                                <video
+                                class="reel-frame"
+                                src="{% static 'video/recovery-4.mp4' %}"
+                                muted
+                                playsinline
+                                webkit-playsinline
+                                preload="metadata">
+                                </video>
+                                <video
+                                class="reel-frame"
+                                src="{% static 'video/recovery-5.mp4' %}"
+                                muted
+                                playsinline
+                                webkit-playsinline
+                                preload="metadata">
+                                </video>
+                                <video
+                                class="reel-frame"
+                                src="{% static 'video/recovery-6.mp4' %}"
+                                muted
+                                playsinline
+                                webkit-playsinline
+                                preload="metadata">
+                            </video>
                         </div>
 
                         <noscript>

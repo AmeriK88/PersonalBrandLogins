@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from .models import Post
 
 def post_list(request):
@@ -11,7 +12,12 @@ def post_list(request):
 
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug, is_published=True)
+
+    # URL absoluta del post (https://tudominio.com/blog/lo-que-sea/)
+    share_url = request.build_absolute_uri(post.get_absolute_url())
+
     context = {
         'post': post,
+        'share_url': share_url,
     }
     return render(request, 'blog/detail.html', context)
