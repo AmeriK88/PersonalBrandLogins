@@ -67,50 +67,48 @@
                         </ul>
                     </div>
 
-<div class="blog-sidebar-card fade-in">
-    <h2 class="blog-sidebar-title">Share</h2>
-    <p class="small text-secondary mb-3">
-        Share this article with players, parents or coaches who might benefit from it.
-    </p>
-    <div class="d-flex gap-2">
-        {# Facebook #}
-        <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url|urlencode }}"
-           target="_blank"
-           rel="noopener"
-           class="social-icon-circle"
-           aria-label="Share on Facebook">
-            <i class="bi bi-facebook"></i>
-        </a>
+                    <div class="blog-sidebar-card fade-in">
+                        <h2 class="blog-sidebar-title">Share</h2>
+                        <p class="small text-secondary mb-3">
+                            Share this article with players, parents or coaches who might benefit from it.
+                        </p>
+                        <div class="d-flex gap-2">
+                            {# Facebook #}
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ share_url|urlencode }}"
+                            target="_blank"
+                            rel="noopener"
+                            class="social-icon-circle"
+                            aria-label="Share on Facebook">
+                                <i class="bi bi-facebook"></i>
+                            </a>
 
-        {# LinkedIn #}
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url|urlencode }}"
-           target="_blank"
-           rel="noopener"
-           class="social-icon-circle"
-           aria-label="Share on LinkedIn">
-            <i class="bi bi-linkedin"></i>
-        </a>
+                            {# LinkedIn #}
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ share_url|urlencode }}"
+                            target="_blank"
+                            rel="noopener"
+                            class="social-icon-circle"
+                            aria-label="Share on LinkedIn">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
 
-        {# Share nativo (móvil) #}
-        <button type="button"
-                class="social-icon-circle js-share-native"
-                data-url="{{ share_url }}"
-                data-title="{{ post.title }}"
-                aria-label="Share this article">
-            <i class="bi bi-share"></i>
-        </button>
+                            {# Share nativo (móvil) #}
+                            <button type="button"
+                                    class="social-icon-circle js-share-native"
+                                    data-url="{{ share_url }}"
+                                    data-title="{{ post.title }}"
+                                    aria-label="Share this article">
+                                <i class="bi bi-share"></i>
+                            </button>
 
-        {# Copiar enlace #}
-        <button type="button"
-                class="social-icon-circle js-share-copy"
-                data-url="{{ share_url }}"
-                aria-label="Copy article link">
-            <i class="bi bi-link-45deg"></i>
-        </button>
-    </div>
-</div>
-
-
+                            {# Copiar enlace #}
+                            <button type="button"
+                                    class="social-icon-circle js-share-copy"
+                                    data-url="{{ share_url }}"
+                                    aria-label="Copy article link">
+                                <i class="bi bi-link-45deg"></i>
+                            </button>
+                        </div>
+                    </div>
 
                     <!-- Recovery Reel -->
                     <div class="blog-sidebar-card mt-4 fade-up">
