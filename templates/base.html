@@ -9,37 +9,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Basic SEO -->
-    <meta name="description" content="{% block meta_description %}Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach, Mentor and Educator. Discover his professional journey, highlights, and insights from the court and classroom.{% endblock %}">
+    <meta name="description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach, Mentor and Educator. Discover his professional journey, highlights, and insights from the court and classroom.">
     <meta name="author" content="Greg Logins Jr">
     <meta name="robots" content="index, follow">
     <!-- Optional: you can override this block per page if you want -->
-    <meta name="keywords" content="{% block meta_keywords %}Greg Logins Jr, professional basketball, basketball coach, player development, student athlete mentoring, leadership, sports mentorship{% endblock %}">
-
-    <!-- Canonical URL (requires request context processor) -->
-    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    <meta name="keywords" content="Greg Logins Jr, professional basketball, basketball coach, player development, student athlete mentoring, leadership, sports mentorship">
 
     <!-- Open Graph (Facebook, LinkedIn, etc.) -->
-    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:type" content="website">
     <meta property="og:site_name" content="Greg Logins Jr">
-    <meta property="og:title" content="{% block og_title %}{{ block.super|default:'Greg Logins Jr · Official Site' }}{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach and Educator.{% endblock %}">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/greg-about.webp' %}{% endblock %}">
+    <meta property="og:title" content="Greg Logins Jr · Official Site">
+    <meta property="og:description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach and Educator.">
+
+    <!-- Imagen para compartir (logo) -->
+    <meta property="og:image" content="{% static 'img/greg-about.webp' %}">
+    <meta property="og:image:type" content="image/png">
+
     <meta property="og:locale" content="en_US">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}Greg Logins Jr · Professional Basketball Player & Coach{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}Insights, highlights and the journey of professional basketball player and mentor Greg Logins Jr.{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'img/greg-about.webp' %}{% endblock %}">
- 
+    <meta name="twitter:title" content="Greg Logins Jr · Professional Basketball Player & Coach">
+    <meta name="twitter:description" content="Insights, highlights and the journey of professional basketball player and mentor Greg Logins Jr.">
+    <meta name="twitter:image" content="{% static 'img/greg-about.webp' %}">
 
     <!-- PWA / Theme colors (nice for mobile browser UI) -->
+    <meta name="color-scheme" content="dark light">
     <meta name="theme-color" content="#000000">
     <meta name="msapplication-TileColor" content="#000000">
     <!-- PWA / standalone mode -->
-    <meta name="mobile-web-app-capable" content="yes">          <!-- Chrome/Android -->
-    <meta name="apple-mobile-web-app-capable" content="yes">    <!-- Safari iOS -->
+    <meta name="mobile-web-app-capable" content="yes">  
+    <meta name="apple-mobile-web-app-capable" content="yes">  
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
     <!-- Favicon & App Icons (adjust paths to your real icons) -->
@@ -49,7 +49,7 @@
     <link rel="manifest" href="{% static 'site.webmanifest' %}">
 
     <!-- Performance: preconnect to external CDNs -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
@@ -72,10 +72,7 @@
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-
-    {% block extra_css %}{% endblock %}
 </head>
-
 <body class="bg-black  d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark main-navbar {% if request.resolver_match.url_name == 'home' %}slide-down{% endif %}">
@@ -238,6 +235,21 @@
     <script src="{% static 'js/core/stats.js' %}" defer></script>
     <script src="{% static 'js/core/animate-onload.js' %}" defer></script>
     <script src="{% static 'js/core/share.js' %}" defer></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(function (registration) {
+                console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(function (error) {
+                console.log('Service Worker registration failed:', error);
+                });
+            });
+        }
+    </script>
+
 
     {% block extra_js %}{% endblock %}
 </body>
