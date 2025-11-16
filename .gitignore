@@ -18,7 +18,6 @@ db.sqlite3
 
 # --- Archivos estáticos generados (si usas collectstatic) ---
 staticfiles/
-static_root/
 static/img/
 static/video/
 static/audio/

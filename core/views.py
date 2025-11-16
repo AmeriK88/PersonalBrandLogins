@@ -25,7 +25,7 @@ def contact(request):
                 subject=subject,
                 message=full_message,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=["gregloginsjr@gmail.com"],  
+                recipient_list=["loginsg00@gmail.com"],  
             )
         except BadHeaderError:
             return HttpResponse("Invalid header found.")

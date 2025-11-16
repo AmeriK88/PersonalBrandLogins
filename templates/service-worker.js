@@ -1,15 +1,10 @@
 {% load static %}
-/* service-worker.js — Greg Logins Jr */
 
-const CACHE_NAME = 'gregloginsjr-v1';
+const CACHE_VERSION = 'v2';  // <-- súbelo cuando hagas cambios importantes
+const CACHE_NAME = `gregloginsjr-${CACHE_VERSION}`;
 
-// Rutas que quieres precachear (app shell)
+// Rutas que quieres precachear (app shell: solo estáticos, no hace falta HTML)
 const URLS_TO_CACHE = [
-  '/',       
-  '/career/',               
-  '/highlights/',
-  '/blog/',
-  '/contact/',
   '{% static "css/main.css" %}',
   '{% static "js/core/stats.js" %}',
   '{% static "js/core/animate-onload.js" %}',
@@ -43,26 +38,48 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// FETCH: estrategia "cache first con actualización en segundo plano"
+// FETCH: network-first para HTML, cache-first para assets
 self.addEventListener('fetch', (event) => {
-  // Solo GET, no toques POST/PUT, etc.
   if (event.request.method !== 'GET') return;
 
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const networkFetch = fetch(event.request)
+  const request = event.request;
+  const acceptHeader = request.headers.get('accept') || '';
+
+  const isHtmlRequest =
+    request.mode === 'navigate' || acceptHeader.includes('text/html');
+
+  if (isHtmlRequest) {
+    // Navegación/HTML -> network-first
+    event.respondWith(
+      fetch(request)
         .then((response) => {
-          // Guardamos copia en caché para la próxima
           const respClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, respClone);
+            cache.put(request, respClone);
           });
           return response;
         })
-        .catch(() => cached || Promise.reject('no-match'));
-
-      // Si hay caché, responde ya; si no, espera red.
-      return cached || networkFetch;
-    })
-  );
+        .catch(() => {
+          // Si no hay red, intenta servir la versión cacheada
+          return caches.match(request);
+        })
+    );
+  } else {
+    // Assets (CSS, JS, imágenes) -> cache-first
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        if (cached) {
+          return cached;
+        }
+        return fetch(request)
+          .then((response) => {
+            const respClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, respClone);
+            });
+            return response;
+          });
+      })
+    );
+  }
 });
