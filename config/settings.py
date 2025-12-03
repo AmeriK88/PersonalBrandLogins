@@ -101,6 +101,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# ========== EMAIL (DESARROLLO) ==========
+
+# Leer backend desde el .env (console, smtp, etc.)
+EMAIL_BACKEND_NAME = env("EMAIL_BACKEND", default="console")
+
+if EMAIL_BACKEND_NAME == "console":
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gregloginsjr.com")
+
+
 
 UNFOLD = {
     # Básico de branding
