@@ -1,8 +1,29 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Greg Logins Jr · Professional Basketball Player / Coach{% endblock %}
 
 {% block content %}
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="pwa-install d-none">
+        <div class="container d-flex align-items-center justify-content-between gap-3 fade-up delay-2">
+            <div>
+                <strong>Add Greg Logins Jr App</strong>
+                <div id="pwa-install-hint" class="small text-secondary">
+                    Install the app for faster access and a smoother experience.
+                </div>
+            </div>
+            <div class="d-flex gap-2 shrink-0">
+                <button id="pwa-install-btn" class="btn btn-gold btn-sm text-uppercase ">
+                    Install app
+                </button>
+                <button id="pwa-install-close" class="btn btn-outline-gold btn-sm">
+                    Later
+                </button>
+            </div>
+        </div>
+    </div>
+
 <section class="hero-landing">
     <div class="hero-image fade-in"></div>
 
@@ -37,3 +58,8 @@
     </div>
 </section>
 {% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/core/pwa-install.js' %}" defer></script>
+{% endblock %}
+

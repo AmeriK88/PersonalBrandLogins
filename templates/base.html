@@ -22,8 +22,8 @@
     <meta property="og:description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach and Educator.">
 
     <!-- Imagen para compartir (logo) -->
-    <meta property="og:image" content="{% static 'img/greg-about.webp' %}">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image" content="{% static 'img/favicon/greg-logo.webp' %}">
+    <meta property="og:image:type" content="image/webp">
 
     <meta property="og:locale" content="en_US">
 
@@ -31,7 +31,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Greg Logins Jr · Professional Basketball Player & Coach">
     <meta name="twitter:description" content="Insights, highlights and the journey of professional basketball player and mentor Greg Logins Jr.">
-    <meta name="twitter:image" content="{% static 'img/greg-about.webp' %}">
+    <meta name="twitter:image" content="{% static 'img/favicon/greg-logo.webp' %}">
 
     <!-- PWA / Theme colors (nice for mobile browser UI) -->
     <meta name="color-scheme" content="dark light">
@@ -132,28 +132,8 @@
         </div>
     </nav>
 
-    <!-- PWA Install Banner -->
-    <div id="pwa-install-banner" class="pwa-install d-none">
-        <div class="container d-flex align-items-center justify-content-between gap-3">
-            <div>
-                <strong>Add Greg Logins Jr App</strong>
-                <div id="pwa-install-hint" class="small text-muted">
-                    Install the app for faster access and a smoother experience.
-                </div>
-            </div>
-            <div class="d-flex gap-2 flex-shrink-0">
-                <button id="pwa-install-btn" class="btn btn-gold btn-sm text-uppercase">
-                    Install app
-                </button>
-                <button id="pwa-install-close" class="btn btn-outline-gold btn-sm">
-                    Later
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="flex-grow-1">
+    <main class="grow">
         {% block content %}{% endblock %}
     </main>
 

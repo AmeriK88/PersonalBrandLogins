@@ -11,6 +11,9 @@
     --a-stagger: 0s; /* se puede sobrescribir con .delay-* */
 }
 
+html {
+    scroll-behavior: smooth;
+}  
 /* BASE */
 body{
     background-color:var(--bg-main);
