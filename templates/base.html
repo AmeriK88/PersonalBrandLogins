@@ -12,7 +12,7 @@
     <meta name="description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach, Mentor and Educator. Discover his professional journey, highlights, and insights from the court and classroom.">
     <meta name="author" content="Greg Logins Jr">
     <meta name="robots" content="index, follow">
-    <!-- Optional: you can override this block per page if you want -->
+    <!-- Optional -->
     <meta name="keywords" content="Greg Logins Jr, professional basketball, basketball coach, player development, student athlete mentoring, leadership, sports mentorship">
 
     <!-- Open Graph (Facebook, LinkedIn, etc.) -->
@@ -21,7 +21,7 @@
     <meta property="og:title" content="Greg Logins Jr · Official Site">
     <meta property="og:description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach and Educator.">
 
-    <!-- Imagen para compartir (logo) -->
+    <!-- Imag SHARE (logo) -->
     <meta property="og:image" content="{% static 'img/favicon/greg-logo.webp' %}">
     <meta property="og:image:type" content="image/webp">
 
@@ -73,7 +73,7 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="bg-black  d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark main-navbar {% if request.resolver_match.url_name == 'home' %}slide-down{% endif %}">
         <div class="container">
@@ -132,7 +132,7 @@
         </div>
     </nav>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- MAIN CONTENT -->
     <main class="grow">
         {% block content %}{% endblock %}
     </main>
@@ -158,7 +158,7 @@
                     </div>
                 </div>
 
-                <!-- Enlaces rápidos -->
+                <!-- QUICK LINKS -->
                 <div class="col-md-4 text-center">
                     <p class="footer-label mb-2">Explore</p>
                     <ul class="list-unstyled mb-0 footer-nav">
