@@ -101,28 +101,36 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# ========== EMAIL (DESARROLLO) ==========
+# ========== EMAIL CONFIG BY ENVIRONMENT ==========
+ENVIRONMENT = env("ENVIRONMENT", default="development")
 
-# Leer backend desde el .env (console, smtp, etc.)
-EMAIL_BACKEND_NAME = env("EMAIL_BACKEND", default="console")
-
-if EMAIL_BACKEND_NAME == "console":
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
+if ENVIRONMENT == "production":
+    # Producción: usar Gmail + App Password
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
+    EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+    EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+
+    EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = env("PASSWORD_APP")
+else:
+    # Desarrollo: emails a la consola (no hay TLS, no hay Gmail)
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gregloginsjr.com")
 
 
 
+
+# UNFOLD Admin Panel Config
 UNFOLD = {
     # Básico de branding
-    "SITE_TITLE": "Greg Admin",
-    "SITE_HEADER": "Greg Admin Panel",
+    "SITE_TITLE": "Greg´s Admin",
+    "SITE_HEADER": "Greg´s Admin Panel",
     "SITE_SUBHEADER": "Player & Content Management",
     "SITE_URL": "/",
 
-    # Iconos / logos 
+    # Icons / logos 
     "SITE_ICON": {
         "light": lambda request: static("img/admin/icon-dark.svg"),
         "dark": lambda request: static("img/admin/icon-light.svg"),
@@ -157,11 +165,10 @@ UNFOLD = {
     # Login
     "LOGIN": {
         "image": lambda request: static("img/admin/login-bg.svg"),
-        # cuando hagas login, te lleva directo a los posts del blog
         "redirect_after": lambda request: reverse_lazy("admin:blog_post_changelist"),
     },
 
-    # Colores de marca (esto es una paleta tipo Tailwind, tú puedes cambiarla)
+    # Colors
     "COLORS": {
         "primary": {
             "50":  "239, 246, 255",
@@ -178,7 +185,7 @@ UNFOLD = {
         }
     },
 
-    # Sidebar / navegación
+    # Sidebar / Nav
     "SIDEBAR": {
         "show_search": True,
         "command_search": False,
