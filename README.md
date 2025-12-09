@@ -199,13 +199,6 @@ Placed inside the blog sidebar for visibility.
 
 ---
 
-## 📬 Contact
-**Developer:** Your Name  
-🌍 Website: your-website  
-💼 LinkedIn: your-linkedin  
-📧 Email: your-email  
-
----
 
 ## 📜 License
 This project is proprietary.  

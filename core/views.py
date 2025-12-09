@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from django.conf import settings
 
 
-
 def home(request):
     return render(request, "core/home.html")
 
@@ -29,9 +28,15 @@ def contact(request):
             )
         except BadHeaderError:
             return HttpResponse("Invalid header found.")
-
+ 
         return render(request, "core/contact.html", {
             "success": True
         })
 
     return render(request, "core/contact.html")
+
+def privacy(request):
+    return render(request, "core/privacy.html")
+
+def cookies(request):
+    return render(request, "core/cookies.html")

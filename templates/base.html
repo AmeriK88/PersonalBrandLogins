@@ -165,6 +165,8 @@
                         <li><a href="{% url 'core:about' %}">About</a></li>
                         <li><a href="{% url 'career:overview' %}">Career</a></li>
                         <li><a href="{% url 'highlights:gallery' %}">Highlights</a></li>
+                        <li><a href="{% url 'core:privacy' %}">Privacy Policy</a></li>
+                        <li><a href="{% url 'core:cookies' %}">Cookies Policy</a></li>
                         <li><a href="{% url 'core:contact' %}">Contact</a></li> 
                         <li><a href="{% url 'blog:list' %}">Blog</a></li>
                     </ul>
@@ -215,6 +217,8 @@
     <script src="{% static 'js/core/stats.js' %}" defer></script>
     <script src="{% static 'js/core/animate-onload.js' %}" defer></script>
     <script src="{% static 'js/core/share.js' %}" defer></script>
+    <script src="{% static 'js/core/cookies.js' %}" defer></script>
+
 
     <script>
         if ('serviceWorker' in navigator) {
@@ -232,5 +236,23 @@
 
 
     {% block extra_js %}{% endblock %}
+
+    <div id="cookie-banner" class="cookie-banner shadow-lg">
+        <div class="cookie-banner-inner">
+            <p class="mb-2 mb-md-0">
+                We use cookies to ensure the best experience on this website. You can accept all cookies
+                or choose to allow only essential ones. For more information, see our
+                <a href="{% url 'core:cookies' %}" class="link-light text-decoration-underline">Cookies Policy</a>.
+            </p>
+            <div class="cookie-banner-actions">
+                <button id="cookie-accept-all" class="btn btn-sm btn-outline-light me-2">
+                    Accept all
+                </button>
+                <button id="cookie-accept-essential" class="btn btn-sm btn-gold">
+                    Only essential
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

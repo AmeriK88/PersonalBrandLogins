@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cookies Policy · Greg Logins Jr{% endblock %}
+
+{% block content %}
+<section class="py-5 fade-in">
+    <div class="container text-light">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <h1 class="mb-4 fw-bold">Cookies Policy</h1>
+                <p class="text-secondary mb-4">
+                    Last updated: {{ last_updated|default:"January 1, 2025" }}
+                </p>
+
+                <p class="mb-4">
+                    This Cookies Policy explains how cookies and similar technologies are used on the official
+                    website of <strong>Greg Logins Jr</strong>.
+                </p>
+
+                <h2 class="h4 mt-4 mb-3">1. What are cookies?</h2>
+                <p>
+                    Cookies are small text files stored on your device when you visit a website. They allow the site
+                    to remember your actions and preferences over a period of time.
+                </p>
+
+                <h2 class="h4 mt-4 mb-3">2. Types of cookies we use</h2>
+
+                <h3 class="h5 mt-3 mb-2">Essential cookies</h3>
+                <p>
+                    These cookies are necessary for the website to function properly, such as security, load balancing
+                    or remembering basic preferences. They cannot be disabled from our systems.
+                </p>
+
+                <h3 class="h5 mt-3 mb-2">Analytics cookies (if enabled)</h3>
+                <p>
+                    These cookies help us understand how visitors interact with the website (e.g. pages visited, time
+                    spent, clicks) in an aggregated and anonymous manner.
+                </p>
+
+                <h3 class="h5 mt-3 mb-2">Third-party cookies</h3>
+                <p>
+                    Some content (such as embedded videos or social media content) may set cookies from external
+                    providers (e.g. YouTube, Instagram, LinkedIn).
+                </p>
+
+                <h2 class="h4 mt-4 mb-3">3. Managing cookies</h2>
+                <p>
+                    You can manage or delete cookies through your browser settings. Please note that disabling certain
+                    cookies may affect the functionality of the website.
+                </p>
+
+                <h2 class="h4 mt-4 mb-3">4. Consent</h2>
+                <p>
+                    By continuing to browse this website, you consent to the use of essential cookies. Analytics or
+                    non-essential cookies will only be used if you accept them.
+                </p>
+
+                <h2 class="h4 mt-4 mb-3">5. Changes to this policy</h2>
+                <p>
+                    We may update this Cookies Policy from time to time. The latest version will always be available
+                    on this page.
+                </p>
+
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
