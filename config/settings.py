@@ -286,8 +286,6 @@ STORAGES = {
 }
 
 
-WHITENOISE_MANIFEST_STRICT = False
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
