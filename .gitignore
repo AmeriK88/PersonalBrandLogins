@@ -9,24 +9,18 @@ __pycache__/
 
 # --- Entornos virtuales ---
 venv/
-.env/
+.env
 .env.bak
 
 # --- Django / Base de datos ---
 db.sqlite3
 *.sqlite3
 
-# --- Archivos estáticos generados (si usas collectstatic) ---
+# --- Static generados (NO los fuente) ---
 staticfiles/
-static/img/
-static/video/
-static/audio/
 
 # --- Media subida por usuarios ---
 media/
-
-# --- Archivos de configuración sensibles ---
-.env
 
 # --- IDE / Editor ---
 .vscode/
