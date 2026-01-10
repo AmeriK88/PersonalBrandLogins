@@ -17,11 +17,13 @@ env = environ.Env(
 
 SECRET_KEY = env('SECRET_KEY')
 
+DEBUG = env.bool("DEBUG", default=False)
+
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
-
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
@@ -35,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'cloudinary',
+    'cloudinary_storage',
     # Installed apps
     "core",
     'career',
@@ -44,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -101,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# ========== EMAIL CONFIG BY ENVIRONMENT ==========
+# ========== EMAIL & MEDIA CONFIG BY ENVIRONMENT ==========
 ENVIRONMENT = env("ENVIRONMENT", default="development")
 
 if ENVIRONMENT == "production":
@@ -114,11 +120,13 @@ if ENVIRONMENT == "production":
     EMAIL_HOST_USER = env("EMAIL_HOST_USER")
     EMAIL_HOST_PASSWORD = env("PASSWORD_APP")
 else:
-    # Desarrollo: emails a la consola (no hay TLS, no hay Gmail)
+    # Desarrollo: emails a la consola
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gregloginsjr.com")
+    # En desarrollo, media local
+    MEDIA_ROOT = BASE_DIR / "media"
 
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gregloginsjr.com")
 
 
 
@@ -258,14 +266,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',
+    BASE_DIR / "static",
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+
+# STORAGES (Cloudinary para media + WhiteNoise para static)
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
