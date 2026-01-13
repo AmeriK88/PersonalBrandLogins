@@ -1,7 +1,9 @@
 # 🏀 Greg Logins Jr — Professional Portfolio Website
 
-A modern, high-performance portfolio website built for **Greg Logins Jr**, a professional basketball player, mentor, educator, father, and international leader.  
-This platform showcases his **career**, **media highlights**, **blog**, and **personal brand**, offering a premium and immersive digital experience.
+A modern, high-performance portfolio platform built for **Greg Logins Jr**, a professional basketball player, mentor, educator, father, and international leader.  
+This website showcases his **career**, **media highlights**, **blog**, and **personal brand**, delivering a premium, cinematic and production-grade digital experience.
+
+Live at: **https://gloginsjr.com**
 
 ---
 
@@ -10,17 +12,37 @@ This platform showcases his **career**, **media highlights**, **blog**, and **pe
 ### **Frontend**
 - 🟦 HTML5  
 - 🎨 CSS3 + Bootstrap 5  
-- ⚡ Custom JS animations (fade-in, reels, audio controls)  
-- 🎬 Optimized images & videos  
+- ⚡ Custom JavaScript animations (fade-in, reels, audio controls)  
+- 🎬 Optimized images & video playback  
+- 🔊 Narration audio system  
 
 ### **Backend**
 - 🐍 Python 3  
 - 🧩 Django 5  
 - 🖼️ Pillow (image processing)  
-- 🌐 SEO-friendly metadata & slugs  
+- 🌐 SEO-friendly slugs & metadata  
+- 🔐 Production-ready security settings  
 
 ### **Database**
-- 🗄️ SQLite / MySQL (configurable)
+- 🐘 PostgreSQL (Railway – production)  
+- 🗄️ SQLite (local development)
+
+### **Media & CDN**
+- ☁️ Cloudinary (images & uploads CDN)
+- ⚡ Global delivery, optimization & resizing
+
+---
+
+## ☁️ Production Infrastructure
+
+- 🚄 Hosting: **Railway**
+- ⚙️ Gunicorn + WhiteNoise
+- 🔒 Automatic HTTPS (Let's Encrypt)
+- 🌍 Custom domain with canonical redirects
+- 🐘 Managed PostgreSQL
+- ☁️ Cloudinary for media storage
+- ✉️ SMTP email (contact form)
+- 🔁 301 Canonical Domain Redirection (SEO safe)
 
 ---
 
@@ -28,14 +50,13 @@ This platform showcases his **career**, **media highlights**, **blog**, and **pe
 
 ```
 project/
-│── config/  
-│── core/            # Base templates, global utilities, audio scripts
-│── blog/            # Blog: categories, posts, slugs, share system
+│── config/          # Django settings & WSGI
+│── core/            # Base templates, middleware, UI logic
+│── blog/            # Articles, categories, SEO, sharing
 │── highlights/      # Photos, videos, press gallery
-│── career/          # High School, College & Pro experience
-│── static/          # CSS, JS, images, animations
-│── media/           # Uploaded media
-│── templates/       # Global templates (base.html, UI components)
+│── career/          # High School, College & Pro timeline
+│── static/          # CSS, JS, audio, video, images
+│── templates/       # Global layout & components
 └── ...
 ```
 
@@ -45,22 +66,22 @@ project/
 
 ### 📸 Highlights Gallery
 - Responsive photo & video grid  
-- **16:9 video wrapper**  
+- **16:9 cinematic video wrapper**  
 - External press links  
-- Lazy-loading + smooth fade animations  
+- Lazy-loading + smooth transitions  
 
 ### 📝 Blog System
 - Category filtering  
 - SEO-ready slugs  
-- Modern article layout  
 - Cover images  
-- **Built-in social sharing (FB, X, LinkedIn, Copy Link)**  
+- **Built-in social sharing (Facebook, X, LinkedIn, Copy Link)**  
+- OpenGraph preview optimization  
 
 ### 🏀 Career Timeline
 Structured into:
 - High School  
 - College  
-- Professional (international)
+- Professional (International)
 
 Each entry includes:
 - Team  
@@ -68,20 +89,19 @@ Each entry includes:
 - League  
 - Country  
 - Achievements  
-- Photo/logo  
+- Image / Logo  
 
 ### 🔊 Recovery Reel System
-- Mixed images + videos  
-- Auto-transitioning  
+- Mixed images & videos  
+- Auto-transition cinematic slideshow  
 - iOS-safe autoplay  
-- Integrated narration with user-controlled audio  
-- Optimized for performance  
+- Integrated narration with audio controls  
 
 ### 🎨 Design System
 - Black & Gold premium palette  
 - Elegant typography  
-- Consistent cards, headers, spacing  
-- Professional fade, slide & hover animations  
+- Unified card system  
+- Professional hover, fade & motion animations  
 
 ---
 
@@ -122,84 +142,61 @@ image
 
 ---
 
-## ⚙️ Installation
+## 📸 Media & Static Configuration
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-user/greg-logins-portfolio.git
-cd greg-logins-portfolio
-```
-
-### 2. Create Virtual Environment
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Apply Migrations
-```bash
-python manage.py migrate
-```
-
-### 5. Start Server
-```bash
-python manage.py runserver
-```
-
----
-
-## 📸 Media Configuration (settings.py)
 ```python
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
 ```
+
+Production:
+- Static files served by **WhiteNoise**
+- Media files served by **Cloudinary CDN**
 
 ---
 
-## 📤 Social Sharing
+## ✉️ Contact System
 
-Blog posts automatically generate full URLs using:
-```python
-request.build_absolute_uri()
-```
-
-JS sharing supports:
-- Facebook  
-- LinkedIn  
-- X (Twitter)  
-- Copy Link  
-
-Placed inside the blog sidebar for visibility.
+- SMTP email delivery
+- Secure app-password authentication
+- Reply-To support
+- Production-safe headers
 
 ---
 
-## 📈 SEO & Performance
-- Dynamic meta tags  
-- OpenGraph support  
-- Lazy loading  
-- Minified CSS/JS  
-- Preconnected fonts  
-- Clean slugs  
+## 🌐 SEO & Performance
+
+- Canonical domain enforcement
+- 301 redirects
+- OpenGraph tags
+- Lazy loading
+- CDN delivery
+- Manifest-hashed static assets
+- Optimized fonts & media
 
 ---
 
 ## ♿ Accessibility
-- Semantic HTML5  
-- ARIA labels  
-- Keyboard-ready components  
-- Accessible narration toggle  
+
+- Semantic HTML5
+- ARIA labels
+- Keyboard navigation
+- Screen reader friendly
+- Audio controls with reduced-motion support
 
 ---
 
+## 🔐 Security
+
+- HTTPS only
+- CSRF protection
+- Secure cookies
+- Environment-based configuration
+- Production-ready middleware stack
+
+---
 
 ## 📜 License
-This project is proprietary.  
+
+This project is proprietary.
 All rights reserved to **Greg Logins Jr**.
