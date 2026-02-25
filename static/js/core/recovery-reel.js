@@ -197,21 +197,21 @@
         frame.pause();
         frame.currentTime = 0;
       } catch (e) {
-        // nada
+
       }
     }
   }
 
-  // ---- 🔓 DESBLOQUEO iOS ----
+  // ---- UNBLOCK iOS ----
   let iosUnlocked = !/iPhone|iPad|iPod/i.test(navigator.userAgent);
-  // En no-iOS: true (funciona como antes)
-  // En iOS: false hasta que el usuario toque algo
+  // In no-iOS: true 
+  // In iOS: false - until interaction
 
   function unlockVideosOnce() {
     if (iosUnlocked) return;
     iosUnlocked = true;
 
-    // “Primar” TODOS los vídeos con el primer gesto
+    // All videos with same inprint
     frames.forEach((frame) => {
       if (!isVideo(frame)) return;
 
@@ -224,7 +224,6 @@
       try {
         frame.play()
           .then(() => {
-            // Los pausamos al momento: solo queremos que iOS “confíe”
             frame.pause();
             frame.currentTime = 0;
           })
@@ -233,34 +232,33 @@
     });
   }
 
-  // Primer tap/click en la página = desbloquea video
+  // First tap/click on screen = unblocks video
   document.addEventListener('touchstart', unlockVideosOnce, { once: true });
   document.addEventListener('click', unlockVideosOnce, { once: true });
 
-  // Si el usuario pulsa el botón de narración, también desbloquea
+  // If narration activate = unblocks video
   const narrationBtn = document.getElementById('about-audio-toggle');
   if (narrationBtn) {
     narrationBtn.addEventListener('click', unlockVideosOnce, { once: true });
   }
-  // ---- fin desbloqueo iOS ----
+  // ---- End iOS blocks ----
 
   function activateFrame(frame, index) {
     frame.classList.add('active');
 
     if (isVideo(frame)) {
-      // Aseguramos flags de iOS
+      // Secure flags iOS
       frame.muted = true;
       frame.setAttribute('muted', '');
       frame.playsInline = true;
       frame.setAttribute('playsinline', '');
       frame.setAttribute('webkit-playsinline', '');
 
-      // Solo intentamos play si ya está desbloqueado
       if (iosUnlocked) {
         frame.play().catch(() => {});
       }
     } else {
-      // Imagen: efecto Ken Burns alternando direcciones
+      // Kenburns effect
       frame.classList.add((index % 2 === 0) ? 'kenburns' : 'kenburns-rev');
     }
   }
@@ -300,7 +298,7 @@
     if (timer) clearTimeout(timer);
     timer = null;
 
-    // Pausar vídeos cuando paramos el reel
+    // Pause video
     frames.forEach(frame => {
       if (isVideo(frame)) {
         try { frame.pause(); } catch (e) {}
@@ -308,11 +306,10 @@
     });
   }
 
-  // Inicia con la primera visible
   setActive(0);
-  scheduleNext(); // comenzamos la secuencia
+  scheduleNext(); 
 
-  // Sincronización básica con audio: pausa/reanuda si el usuario pausa/reproduce
+  // Basic sync with audio
   if (audioEl) {
     audioEl.addEventListener('play', () => {
       if (!playing) {
@@ -327,7 +324,7 @@
     });
   }
 
-  // Pausa al ocultarse (ahorro batería)
+  // Pause when hidden 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       stop();

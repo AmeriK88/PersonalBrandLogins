@@ -28,8 +28,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CANONICAL_HOST = env("CANONICAL_HOST", default="")
 
 
-# Application definition
-
+# APP definition
 INSTALLED_APPS = [
     'unfold',                       
     'unfold.contrib.filters',   
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
 
     'cloudinary',
     'cloudinary_storage',
+
     # Installed apps
     "core",
     'career',
@@ -83,8 +83,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASE_URL = env("DATABASE_URL", default="")
 
 if DATABASE_URL:
@@ -102,8 +100,6 @@ else:
 
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -123,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ENVIRONMENT = env("ENVIRONMENT", default="development")
 
 if ENVIRONMENT == "production":
-    # Producción: usar Gmail + App Password
+    # Producyion: USE Gmail + App Password
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
     EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
     EMAIL_PORT = env.int("EMAIL_PORT", default=587)
@@ -132,10 +128,10 @@ if ENVIRONMENT == "production":
     EMAIL_HOST_USER = env("EMAIL_HOST_USER")
     EMAIL_HOST_PASSWORD = env("PASSWORD_APP")
 else:
-    # Desarrollo: emails a la consola
+    # Development: console emails
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-    # En desarrollo, media local
+    # Development - media / local
     MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gregloginsjr.com")
@@ -144,7 +140,7 @@ DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="no-reply@gregloginsjr.co
 
 # UNFOLD Admin Panel Config
 UNFOLD = {
-    # Básico de branding
+    # Branding
     "SITE_TITLE": "Greg´s Admin",
     "SITE_HEADER": "Greg´s Admin Panel",
     "SITE_SUBHEADER": "Player & Content Management",
@@ -175,7 +171,7 @@ UNFOLD = {
     
     ],
 
-    #  UX del admin
+    #  UX admin
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "SHOW_BACK_BUTTON": False,
@@ -287,7 +283,7 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = "/media/"
 
-# STORAGES (Cloudinary para media + WhiteNoise para static)
+# STORAGES (Cloudinary for media + WhiteNoise for static)
 STORAGES = {
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
@@ -299,6 +295,4 @@ STORAGES = {
 
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -4,7 +4,7 @@
 
     const consent = localStorage.getItem("cookieConsent");
 
-    // Si ya aceptó algo, ocultamos el banner
+    // If accepted - use banner
     if (consent === "all" || consent === "essential") {
         banner.style.display = "none";
         return;
@@ -18,7 +18,7 @@
             localStorage.setItem("cookieConsent", "all");
             banner.style.display = "none";
 
-            // Aquí puedes activar Google Analytics si lo usas
+            // If google analityrs - this is future update
             // loadAnalytics();
         });
     }

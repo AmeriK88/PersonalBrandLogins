@@ -11,13 +11,13 @@ from .models import Highlight
 
 @admin.register(Highlight)
 class HighlightAdmin(ModelAdmin):
-    # UX de Unfold
+    # UX Unfold
     compressed_fields = True
     warn_unsaved_form = True
     list_filter_sheet = True
     list_filter_submit = True
 
-    # Qué se muestra en la lista
+    # LIST
     list_display = (
         "title",
         "category_badge",
@@ -29,7 +29,7 @@ class HighlightAdmin(ModelAdmin):
     )
     list_display_links = ("title",)
 
-    # Búsqueda y filtros
+    # SEARCH & FILTERS
     search_fields = ("title", "description")
     list_filter = [
         ("title", FieldTextFilter),
@@ -40,7 +40,7 @@ class HighlightAdmin(ModelAdmin):
     ordering = ("-created_at",)
     list_per_page = 25
 
-    # Acciones bulk
+    # ABULK ACTIONS
     actions = ["clear_image", "clear_links"]
 
     @action(
@@ -78,12 +78,10 @@ class HighlightAdmin(ModelAdmin):
                 cleared += 1
         self.message_user(request, f"Cleared links from {cleared} highlight(s).")
 
-    # ===== Campos "bonitos" =====
-
+    # ===== FIELDS =====
     @admin.display(description="Category")
     def category_badge(self, obj):
         label = obj.get_category_display()
-        # usamos la categoría como parte de la clase (photo/video/press)
         return format_html(
             "<span class='admin-badge admin-badge-category admin-badge-category-{}'>{}</span>",
             obj.category,

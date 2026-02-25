@@ -11,7 +11,7 @@ from .models import Experience
 
 @admin.register(Experience)
 class ExperienceAdmin(ModelAdmin):
-    # UX de Unfold
+    # UX Unfold
     compressed_fields = True
     warn_unsaved_form = True
     list_filter_sheet = True
@@ -29,7 +29,7 @@ class ExperienceAdmin(ModelAdmin):
     )
     list_display_links = ("team",)
 
-    # Búsqueda y filtros
+    # SEARCH & FILTERS
     search_fields = ("team", "league", "country", "achievements")
     list_filter = [
         ("team", FieldTextFilter),
@@ -37,10 +37,10 @@ class ExperienceAdmin(ModelAdmin):
         "country",
     ]
 
-    ordering = ("-years",)   # coherente con el Meta del modelo
+    ordering = ("-years",) 
     list_per_page = 25
 
-    # Acciones bulk
+    # Bulk actions
     actions = ["clear_image"]
 
     @action(
@@ -61,12 +61,11 @@ class ExperienceAdmin(ModelAdmin):
             f"Removed image from {cleared} experience(s).",
         )
 
-    # ==== Campos "bonitos" ====
+    # ==== FIELDS ====
 
     @admin.display(description="Category")
     def category_badge(self, obj):
         label = obj.get_category_display()
-        # usamos el value de category para construir la clase:
         # high_school / college / professional
         return format_html(
             "<span class='admin-badge admin-badge-exp admin-badge-exp-{}'>{}</span>",

@@ -1,4 +1,3 @@
-// static/js/core/animate-onload.js
 document.addEventListener("DOMContentLoaded", () => {
   const targets = document.querySelectorAll(
     ".fade-up, .fade-in, .slide-left, .slide-right"
@@ -8,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Si el usuario no quiere animaciones → mostrar todo sin efectos
   if (reduceMotion) {
     targets.forEach((el) => {
       el.classList.add("animate-in");
@@ -16,8 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Animate on load con pequeño stagger automático
-  const baseDelay = 0.12; // segundos
+  // Animate on load stagger
+  const baseDelay = 0.12;
 
   setTimeout(() => {
     targets.forEach((el, i) => {
@@ -25,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cls.startsWith("delay-")
       );
 
-      // Si NO tiene delay-*, aplicamos stagger usando la CSS var --stagger
+      // If NO delay-*, apply stagger using CSS var --stagger
       if (!hasManualDelay) {
         el.style.setProperty("--stagger", `${i * baseDelay}s`);
       }

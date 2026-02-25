@@ -13,7 +13,7 @@ def post_list(request):
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug, is_published=True)
 
-    # URL absoluta del post (https://tudominio.com/blog/lo-que-sea/)
+    # Absolute URL (https://YOUR_DOMAIN.com/blog/YOUR_ROUTE/)
     share_url = request.build_absolute_uri(post.get_absolute_url())
 
     context = {

@@ -4,13 +4,13 @@
     const btn = document.getElementById('about-audio-toggle');
     if (!audio || !btn) return;
 
-    // Estado inicial del botón
+    // Initial btn state
     function setBtnPlayingUI(playing) {
       btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
       btn.textContent = playing ? '🔇 Pause Narration' : '🔊 Play Narration';
     }
 
-    // Intento de autoplay en silencio (permitido)
+    // Silence autoplay (permitido)
     const tryAutoplayMuted = async () => {
       try {
         audio.muted = true;
@@ -19,28 +19,28 @@
     };
     tryAutoplayMuted();
 
-    // 🎯 Desmutear automáticamente en la primera interacción del usuario
+    // Unmute at 1st interaction
     const enableSoundOnce = async () => {
       if (!audio) return;
-      if (!audio.muted) return; // ya activo
+      if (!audio.muted) return;
 
       try {
         audio.muted = false;
         await audio.play();
         setBtnPlayingUI(true);
       } catch (_) {
-        // fallback: si algo falla, mantenemos el botón manual
+        // fallback
         setBtnPlayingUI(false);
       }
 
-      // quitar el listener tras primera activación
+      // Remove listener
       document.removeEventListener('click', enableSoundOnce);
     };
 
-    // Escucha el primer clic del usuario (en cualquier parte)
+    // Click listener
     document.addEventListener('click', enableSoundOnce, { once: true });
 
-    // Botón de control manual (play/pause)
+    // Play/pause btn
     btn.addEventListener('click', async () => {
       if (audio.paused) {
         audio.muted = false;
@@ -52,11 +52,11 @@
       }
     });
 
-    // Reflejar estado si se pausa o reanuda
+    // Reflect state
     audio.addEventListener('play', () => setBtnPlayingUI(true));
     audio.addEventListener('pause', () => setBtnPlayingUI(false));
 
-    // Pausar si la pestaña se oculta
+    // Pause if minimize/hidden
     document.addEventListener('visibilitychange', () => {
       if (document.hidden && !audio.paused) audio.pause();
     });

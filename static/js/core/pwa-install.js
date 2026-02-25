@@ -5,18 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const hintEl = document.getElementById('pwa-install-hint');
 
   if (!banner || !installBtn || !closeBtn) {
-    return; // por si en alguna plantilla no están
+    return; 
   }
 
   let deferredPrompt = null;
 
-  // Detectar iOS
+  // Detect iOS
   const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
   const isStandalone =
     window.matchMedia('(display-mode: standalone)').matches ||
     window.navigator.standalone === true;
 
-  // 1) Flujo especial para iOS (no hay beforeinstallprompt)
+  // 1) Special iOS flow (if no beforeinstallprompt)
   if (isIos && !isStandalone) {
     banner.classList.remove('d-none');
     if (hintEl) {
@@ -25,19 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // 2) Flujo estándar Chrome/Chromium (beforeinstallprompt)
+  // 2) Standard flow
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
 
-    // Si no estamos ya mostrando el banner por iOS:
     if (banner.classList.contains('d-none')) {
       banner.classList.remove('d-none');
     }
   });
 
   installBtn.addEventListener('click', async () => {
-    // Si estamos en un navegador sin beforeinstallprompt
+    // Browser with no beforeinstallprompt
     if (!deferredPrompt) {
       if (isIos) {
         alert("On iOS, use the share button and choose 'Add to Home Screen'.");

@@ -11,7 +11,7 @@ from .models import Post
 
 @admin.register(Post)
 class PostAdmin(ModelAdmin):
-    # Opciones de UX en Unfold
+    # Options UX Unfold
     compressed_fields = True
     warn_unsaved_form = True
     list_filter_sheet = True
@@ -96,7 +96,7 @@ class PostAdmin(ModelAdmin):
 
     @admin.display(description="Category")
     def category_badge(self, obj):
-        # usamos la categoría para poder customizar por tipo si quieres
+        # Use category to customize
         return format_html(
             "<span class='admin-badge admin-badge-post-category admin-badge-post-category-{}'>{}</span>",
             obj.category,

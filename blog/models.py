@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.text import slugify
-from django.urls import reverse   # 👈 añade esto
+from django.urls import reverse 
 
 class Post(models.Model):
     CATEGORY_CHOICES = [
@@ -32,5 +32,4 @@ class Post(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        # Usa el mismo nombre que ya usas en los templates: 'blog:detail'
         return reverse('blog:detail', args=[self.slug])
