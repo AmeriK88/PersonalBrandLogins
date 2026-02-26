@@ -196,7 +196,12 @@ Production:
 
 ---
 
-## 📜 License
+## 🔒 License
 
-This project is proprietary.
-All rights reserved to **Greg Logins Jr**.
+This project is licensed under the Elastic License 2.0 (ELv2).
+
+Commercial use, redistribution, or offering this software as a service
+requires explicit permission from the author.
+
+© 2026 **José Félix**
+
