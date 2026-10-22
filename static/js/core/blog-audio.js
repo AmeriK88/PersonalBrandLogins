@@ -1,8 +1,10 @@
 (function () {
-  document.addEventListener('DOMContentLoaded', () => {
+  function initializeAudio() {
     const audio = document.getElementById('about-narration');
     const btn = document.getElementById('about-audio-toggle');
     if (!audio || !btn) return;
+    if (audio.dataset.initialized === 'true') return;
+    audio.dataset.initialized = 'true';
 
     // Initial btn state
     function setBtnPlayingUI(playing) {
@@ -44,8 +46,12 @@
     btn.addEventListener('click', async () => {
       if (audio.paused) {
         audio.muted = false;
-        await audio.play();
-        setBtnPlayingUI(true);
+        try {
+          await audio.play();
+          setBtnPlayingUI(true);
+        } catch (_) {
+          setBtnPlayingUI(false);
+        }
       } else {
         audio.pause();
         setBtnPlayingUI(false);
@@ -60,5 +66,11 @@
     document.addEventListener('visibilitychange', () => {
       if (document.hidden && !audio.paused) audio.pause();
     });
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeAudio, { once: true });
+  } else {
+    initializeAudio();
+  }
 })();

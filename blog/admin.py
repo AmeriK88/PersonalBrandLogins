@@ -1,12 +1,19 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from unfold.admin import ModelAdmin
+from unfold.admin import ModelAdmin, TabularInline
 from unfold.contrib.filters.admin import FieldTextFilter, RangeDateTimeFilter
 from unfold.decorators import action
 from unfold.enums import ActionVariant
 
-from .models import Post
+from .models import Post, PostReelMedia
+
+
+class PostReelMediaInline(TabularInline):
+    model = PostReelMedia
+    fields = ('order', 'media_type', 'image', 'video', 'caption', 'alt_text')
+    ordering = ('order',)
+    extra = 1
 
 
 @admin.register(Post)
@@ -42,6 +49,7 @@ class PostAdmin(ModelAdmin):
     list_per_page = 25
 
     prepopulated_fields = {"slug": ("title",)}
+    inlines = [PostReelMediaInline]
 
     # BULK ACTIONS
     actions = ["publish_posts", "unpublish_posts", "clear_cover_image"]

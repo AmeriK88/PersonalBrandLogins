@@ -96,6 +96,7 @@ Each entry includes:
 - Auto-transition cinematic slideshow  
 - iOS-safe autoplay  
 - Integrated narration with audio controls  
+- Per-article narration and ordered reel items managed in Django Admin
 
 ### 🎨 Design System
 - Black & Gold premium palette  
@@ -118,7 +119,28 @@ cover_image
 is_published
 created_at
 updated_at
+narration_audio (optional)
 ```
+
+### **Blog — `PostReelMedia`**
+```
+post
+media_type (image | video)
+image or video file
+order
+caption
+alt_text
+```
+
+## Blog Multimedia Management
+
+Edit a post in Django Admin to upload its optional narration and add reel items in the inline. Choose the media type, upload the matching image or video, set its order, and provide alt text where appropriate. Reel items are private to their post; posts can have narration, a reel, both, or neither.
+
+In development, blog uploads are stored under `media/blog/`. With `ENVIRONMENT=production`, image files use Cloudinary's image resource type and narration/video files use its video resource type. Keep Cloudinary credentials configured on Railway; Railway's local filesystem is ephemeral and is not used for these production uploads.
+
+The original static recovery media remains as a compatibility fallback only for the article whose slug is `watch-this-the-story-of-my-comeback`. No database migration assigns those files to a post. Before removing that fallback, verify the corresponding production article and each original asset, upload its narration and reel through Admin, and confirm the public article works. Do not delete the old static files until that verification is complete. If the legacy article is not present under that slug in a target database, identify it manually before making any compatibility change; do not assign its media to another post.
+
+Before deploying this schema to Railway, run the migrations and verify `ENVIRONMENT=production`, the Cloudinary credentials, and the resulting image/video/audio delivery URLs. Then upload or re-upload the legacy article's media through Admin if it is not already available in Cloudinary. Do not rely on Railway's local disk for uploads.
 
 ### **Highlights — `Highlight`**
 ```

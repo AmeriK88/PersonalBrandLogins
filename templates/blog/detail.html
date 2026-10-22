@@ -5,17 +5,23 @@
 
 {% block content %}
 <section class="page-section blog-detail-section py-5 fade-in">
-    <!-- Narration -->
+    {% if post.narration_audio or legacy_multimedia %}
     <audio id="about-narration" preload="auto" autoplay muted>
-        <source src="{% static 'audio/narration.mp3' %}" type="audio/mpeg">
+        {% if post.narration_audio %}
+        <source src="{{ post.narration_audio.url }}">
+        {% else %}
+        <source src="{% static 'audio/narration.mp3' %}">
+        {% endif %}
         Your browser does not support the audio element.
     </audio>
+    {% endif %}
 
     <div class="container fade-up">
-        <!-- Botón de control -->
+        {% if post.narration_audio or legacy_multimedia %}
         <button id="about-audio-toggle" class="btn btn-outline-gold btn-sm mt-3 fade-in" aria-pressed="false" aria-label="Play narration">
             🔊 Play Narration
         </button>
+        {% endif %}
 
         <!-- Breadcrumb -->
         <p class="section-eyebrow mb-3 fade-in">
@@ -108,17 +114,31 @@
                         </div>
                     </div>
 
-                    <!-- Recovery Reel -->
+                    {% if reel_items or legacy_multimedia %}
                     <div class="blog-sidebar-card mt-4 fade-up">
                         <h2 class="blog-sidebar-title">Recovery Reel</h2>
                         <p class="small text-secondary mb-3 fade-in">Moments from the comeback — rehab, sweat, belief.</p>
 
                         <div id="recovery-reel"
                             class="reel fade-up"
-                            data-interval="5500"
-                            data-sync-audio="about-narration">
-                            <img src="{% static 'img/recovery/life.webp' %}" alt="Liefe´s test" class="reel-frame" loading="lazy">
-                            <img src="{% static 'img/recovery/life.webp' %}" alt="Life´s test" class="reel-frame" loading="lazy">
+                            data-image-interval="4600"
+                            data-video-interval="5600"
+                            {% if post.narration_audio or legacy_multimedia %}
+                            data-sync-audio="about-narration"
+                            {% endif %}
+                            >{% if reel_items %}
+                                {% for item in reel_items %}
+                                    {% if item.media_type == 'image' %}
+                            <img src="{{ item.image.url }}" alt="{{ item.alt_text|default:item.caption|default:post.title }}" class="reel-frame" loading="lazy">
+                                    {% else %}
+                            <video class="reel-frame" src="{{ item.video.url }}" aria-label="{{ item.alt_text|default:item.caption|default:post.title }}" muted playsinline webkit-playsinline preload="metadata">
+                                Your browser does not support the video tag.
+                            </video>
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                            <img src="{% static 'img/recovery/life.webp' %}" alt="Life's test" class="reel-frame" loading="lazy">
+                            <img src="{% static 'img/recovery/life.webp' %}" alt="Life's test" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-00-0.webp' %}" alt="Rehab starts" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-00.webp' %}" alt="Rehab starts" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-01.webp' %}" alt="Rehab session 1" class="reel-frame" loading="lazy">
@@ -128,58 +148,17 @@
                             <img src="{% static 'img/recovery/recovery-05.webp' %}" alt="After surgery" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-06.webp' %}" alt="Injury MRI" class="reel-frame" loading="lazy">
                             <img src="{% static 'img/recovery/recovery-09.webp' %}" alt="Rehab session 3" class="reel-frame" loading="lazy">
-                                <video
-                                class="reel-frame"
-                                src="{% static 'video/recovery-1.mp4' %}"
-                                muted
-                                playsinline
-                                webkit-playsinline
-                                preload="metadata">
-                                Your browser does not support the video tag.
-                                </video>
+                            <video class="reel-frame" src="{% static 'video/recovery-1.mp4' %}" muted playsinline webkit-playsinline preload="metadata">Your browser does not support the video tag.</video>
                             <img src="{% static 'img/recovery/recovery-08.webp' %}" alt="Rehab session 3" class="reel-frame" loading="lazy">
-                                <video
-                                class="reel-frame"
-                                src="{% static 'video/recovery-2.mp4' %}"
-                                muted
-                                playsinline
-                                webkit-playsinline
-                                preload="metadata">
-                                </video>
-                                <video
-                                class="reel-frame"
-                                src="{% static 'video/recovery-3.mp4' %}"
-                                muted
-                                playsinline
-                                webkit-playsinline
-                                preload="metadata">
-                                </video>
-                                <video
-                                class="reel-frame"
-                                src="{% static 'video/recovery-4.mp4' %}"
-                                muted
-                                playsinline
-                                webkit-playsinline
-                                preload="metadata">
-                                </video>
-                                <video
-                                class="reel-frame"
-                                src="{% static 'video/recovery-5.mp4' %}"
-                                muted
-                                playsinline
-                                webkit-playsinline
-                                preload="metadata">
-                                </video>
-                                <video
-                                class="reel-frame"
-                                src="{% static 'video/recovery-6.mp4' %}"
-                                muted
-                                playsinline
-                                webkit-playsinline
-                                preload="metadata">
-                            </video>
+                            <video class="reel-frame" src="{% static 'video/recovery-2.mp4' %}" muted playsinline webkit-playsinline preload="metadata"></video>
+                            <video class="reel-frame" src="{% static 'video/recovery-3.mp4' %}" muted playsinline webkit-playsinline preload="metadata"></video>
+                            <video class="reel-frame" src="{% static 'video/recovery-4.mp4' %}" muted playsinline webkit-playsinline preload="metadata"></video>
+                            <video class="reel-frame" src="{% static 'video/recovery-5.mp4' %}" muted playsinline webkit-playsinline preload="metadata"></video>
+                            <video class="reel-frame" src="{% static 'video/recovery-6.mp4' %}" muted playsinline webkit-playsinline preload="metadata"></video>
+                            {% endif %}
                         </div>
 
+                        {% if legacy_multimedia and not reel_items %}
                         <noscript>
                             <div class="row g-2 mt-2">
                                 <div class="col-6"><img src="{% static 'img/recovery/recovery-01.webp' %}" class="img-fluid rounded" alt=""></div>
@@ -187,7 +166,9 @@
                                 <div class="col-6"><img src="{% static 'img/recovery/recovery-03.webp' %}" class="img-fluid rounded" alt=""></div>
                             </div>
                         </noscript>
+                        {% endif %}
                     </div>
+                    {% endif %}
 
                     <div class="mt-4 fade-in">
                         <a href="{% url 'blog:list' %}" class="btn btn-outline-gold btn-sm">

@@ -1,335 +1,152 @@
 (function () {
-  const reel = document.getElementById('recovery-reel');
-  if (!reel) return;
+  function initializeReel() {
+    const reel = document.getElementById('recovery-reel');
+    if (!reel || reel.dataset.initialized === 'true') return;
 
-  const frames = Array.from(reel.querySelectorAll('.reel-frame'));
-  if (frames.length === 0) return;
+    const frames = Array.from(reel.querySelectorAll('.reel-frame'));
+    if (frames.length === 0) return;
+    reel.dataset.initialized = 'true';
 
-  // Duraciones diferenciadas (ms)
-  const imageDuration = parseInt(reel.getAttribute('data-image-interval') || '4600', 10);
-  const videoDuration = parseInt(reel.getAttribute('data-video-interval') || '5600', 10);
+    const readDuration = (name, fallback) => {
+      const value = Number.parseInt(reel.getAttribute(name), 10);
+      return Number.isFinite(value) && value > 0 ? value : fallback;
+    };
+    const imageDuration = readDuration('data-image-interval', 4600);
+    const videoDuration = readDuration('data-video-interval', 5600);
+    const audioId = reel.getAttribute('data-sync-audio');
+    const audio = audioId ? document.getElementById(audioId) : null;
 
-  const audioId = reel.getAttribute('data-sync-audio');
-  const audioEl = audioId ? document.getElementById(audioId) : null;
+    let index = 0;
+    let timer = null;
+    let playing = true;
+    let iosUnlocked = !/iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  let idx = 0;
-  let timer = null;
-  let playing = true;
+    function isVideo(frame) {
+      return frame.tagName.toLowerCase() === 'video';
+    }
 
-  function isVideo(el) {
-    return el.tagName.toLowerCase() === 'video';
-  }
+    function resetFrame(frame) {
+      frame.classList.remove('active', 'kenburns', 'kenburns-rev');
+      if (!isVideo(frame)) return;
 
-  function resetFrame(frame) {
-    frame.classList.remove('active', 'kenburns', 'kenburns-rev');
-
-    if (isVideo(frame)) {
       try {
         frame.pause();
         frame.currentTime = 0;
-      } catch (e) {
-        // nada
-      }
+      } catch (_) {}
     }
-  }
 
-  // ---- 🔓 DESBLOQUEO iOS ----
-  let iosUnlocked = !/iPhone|iPad|iPod/i.test(navigator.userAgent);
-  // En no-iOS: true (funciona como antes)
-  // En iOS: false hasta que el usuario toque algo
+    function unlockVideosOnce() {
+      if (iosUnlocked) return;
+      iosUnlocked = true;
 
-  function unlockVideosOnce() {
-    if (iosUnlocked) return;
-    iosUnlocked = true;
+      frames.forEach((frame) => {
+        if (!isVideo(frame)) return;
+        frame.muted = true;
+        frame.playsInline = true;
+        frame.setAttribute('muted', '');
+        frame.setAttribute('playsinline', '');
+        frame.setAttribute('webkit-playsinline', '');
 
-    // “Primar” TODOS los vídeos con el primer gesto
-    frames.forEach((frame) => {
-      if (!isVideo(frame)) return;
+        try {
+          const playback = frame.play();
+          if (playback && typeof playback.then === 'function') {
+            playback.then(() => {
+              frame.pause();
+              frame.currentTime = 0;
+            }).catch(() => {});
+          }
+        } catch (_) {}
+      });
+    }
+
+    function activateFrame(frame, frameIndex) {
+      frame.classList.add('active');
+      if (!isVideo(frame)) {
+        frame.classList.add(frameIndex % 2 === 0 ? 'kenburns' : 'kenburns-rev');
+        return;
+      }
 
       frame.muted = true;
-      frame.setAttribute('muted', '');
       frame.playsInline = true;
+      frame.setAttribute('muted', '');
       frame.setAttribute('playsinline', '');
       frame.setAttribute('webkit-playsinline', '');
-
-      try {
-        frame.play()
-          .then(() => {
-            // Los pausamos al momento: solo queremos que iOS “confíe”
-            frame.pause();
-            frame.currentTime = 0;
-          })
-          .catch(() => {});
-      } catch (e) {}
-    });
-  }
-
-  // Primer tap/click en la página = desbloquea video
-  document.addEventListener('touchstart', unlockVideosOnce, { once: true });
-  document.addEventListener('click', unlockVideosOnce, { once: true });
-
-  // Si el usuario pulsa el botón de narración, también desbloquea
-  const narrationBtn = document.getElementById('about-audio-toggle');
-  if (narrationBtn) {
-    narrationBtn.addEventListener('click', unlockVideosOnce, { once: true });
-  }
-  // ---- fin desbloqueo iOS ----
-
-  function activateFrame(frame, index) {
-    frame.classList.add('active');
-
-    if (isVideo(frame)) {
-      // Aseguramos flags de iOS
-      frame.muted = true;
-      frame.setAttribute('muted', '');
-      frame.playsInline = true;
-      frame.setAttribute('playsinline', '');
-      frame.setAttribute('webkit-playsinline', '');
-
-      // Solo intentamos play si ya está desbloqueado
       if (iosUnlocked) {
-        frame.play().catch(() => {});
+        try {
+          const playback = frame.play();
+          if (playback && typeof playback.catch === 'function') playback.catch(() => {});
+        } catch (_) {}
       }
-    } else {
-      // Imagen: efecto Ken Burns alternando direcciones
-      frame.classList.add((index % 2 === 0) ? 'kenburns' : 'kenburns-rev');
     }
-  }
 
-  function setActive(next) {
-    frames.forEach((frame, i) => {
-      resetFrame(frame);
-      if (i === next) {
-        activateFrame(frame, i);
-      }
-    });
-    idx = next;
-  }
+    function setActive(next) {
+      frames.forEach((frame) => resetFrame(frame));
+      index = next;
+      activateFrame(frames[index], index);
+    }
 
-  function scheduleNext() {
-    if (!playing) return;
+    function scheduleNext() {
+      if (!playing) return;
+      const duration = isVideo(frames[index]) ? videoDuration : imageDuration;
+      timer = window.setTimeout(() => {
+        timer = null;
+        setActive((index + 1) % frames.length);
+        scheduleNext();
+      }, duration);
+    }
 
-    const current = frames[idx];
-    const isVid = isVideo(current);
-    const dur = isVid ? videoDuration : imageDuration;
-
-    timer = setTimeout(() => {
-      const n = (idx + 1) % frames.length;
-      setActive(n);
+    function advanceAfterVideoError(event) {
+      if (event.currentTarget !== frames[index] || !playing) return;
+      if (timer !== null) window.clearTimeout(timer);
+      timer = null;
+      setActive((index + 1) % frames.length);
       scheduleNext();
-    }, dur);
-  }
-
-  function start() {
-    if (playing) return;
-    playing = true;
-    scheduleNext();
-  }
-
-  function stop() {
-    playing = false;
-    if (timer) clearTimeout(timer);
-    timer = null;
-
-    // Pausar vídeos cuando paramos el reel
-    frames.forEach(frame => {
-      if (isVideo(frame)) {
-        try { frame.pause(); } catch (e) {}
-      }
-    });
-  }
-
-  // Inicia con la primera visible
-  setActive(0);
-  scheduleNext(); // comenzamos la secuencia
-
-  // Sincronización básica con audio: pausa/reanuda si el usuario pausa/reproduce
-  if (audioEl) {
-    audioEl.addEventListener('play', () => {
-      if (!playing) {
-        start();
-      }
-    });
-    audioEl.addEventListener('pause', () => {
-      stop();
-    });
-    audioEl.addEventListener('ended', () => {
-      stop();
-    });
-  }
-
-  // Pausa al ocultarse (ahorro batería)
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      stop();
-    } else if (!playing) {
-      start();
     }
-  });
-})();
-(function () {
-  const reel = document.getElementById('recovery-reel');
-  if (!reel) return;
 
-  const frames = Array.from(reel.querySelectorAll('.reel-frame'));
-  if (frames.length === 0) return;
-
-  // Duraciones diferenciadas (ms)
-  const imageDuration = parseInt(reel.getAttribute('data-image-interval') || '4600', 10);
-  const videoDuration = parseInt(reel.getAttribute('data-video-interval') || '5600', 10);
-
-  const audioId = reel.getAttribute('data-sync-audio');
-  const audioEl = audioId ? document.getElementById(audioId) : null;
-
-  let idx = 0;
-  let timer = null;
-  let playing = true;
-
-  function isVideo(el) {
-    return el.tagName.toLowerCase() === 'video';
-  }
-
-  function resetFrame(frame) {
-    frame.classList.remove('active', 'kenburns', 'kenburns-rev');
-
-    if (isVideo(frame)) {
-      try {
-        frame.pause();
-        frame.currentTime = 0;
-      } catch (e) {
-
-      }
+    function start() {
+      if (playing) return;
+      playing = true;
+      activateFrame(frames[index], index);
+      scheduleNext();
     }
-  }
 
-  // ---- UNBLOCK iOS ----
-  let iosUnlocked = !/iPhone|iPad|iPod/i.test(navigator.userAgent);
-  // In no-iOS: true 
-  // In iOS: false - until interaction
+    function stop() {
+      playing = false;
+      if (timer !== null) window.clearTimeout(timer);
+      timer = null;
+      frames.forEach((frame) => {
+        if (isVideo(frame)) frame.pause();
+      });
+    }
 
-  function unlockVideosOnce() {
-    if (iosUnlocked) return;
-    iosUnlocked = true;
-
-    // All videos with same inprint
     frames.forEach((frame) => {
-      if (!isVideo(frame)) return;
-
-      frame.muted = true;
-      frame.setAttribute('muted', '');
-      frame.playsInline = true;
-      frame.setAttribute('playsinline', '');
-      frame.setAttribute('webkit-playsinline', '');
-
-      try {
-        frame.play()
-          .then(() => {
-            frame.pause();
-            frame.currentTime = 0;
-          })
-          .catch(() => {});
-      } catch (e) {}
+      if (isVideo(frame)) frame.addEventListener('error', advanceAfterVideoError);
     });
-  }
-
-  // First tap/click on screen = unblocks video
-  document.addEventListener('touchstart', unlockVideosOnce, { once: true });
-  document.addEventListener('click', unlockVideosOnce, { once: true });
-
-  // If narration activate = unblocks video
-  const narrationBtn = document.getElementById('about-audio-toggle');
-  if (narrationBtn) {
-    narrationBtn.addEventListener('click', unlockVideosOnce, { once: true });
-  }
-  // ---- End iOS blocks ----
-
-  function activateFrame(frame, index) {
-    frame.classList.add('active');
-
-    if (isVideo(frame)) {
-      // Secure flags iOS
-      frame.muted = true;
-      frame.setAttribute('muted', '');
-      frame.playsInline = true;
-      frame.setAttribute('playsinline', '');
-      frame.setAttribute('webkit-playsinline', '');
-
-      if (iosUnlocked) {
-        frame.play().catch(() => {});
-      }
-    } else {
-      // Kenburns effect
-      frame.classList.add((index % 2 === 0) ? 'kenburns' : 'kenburns-rev');
+    document.addEventListener('touchstart', unlockVideosOnce, { once: true });
+    document.addEventListener('click', unlockVideosOnce, { once: true });
+    const narrationButton = document.getElementById('about-audio-toggle');
+    if (narrationButton) {
+      narrationButton.addEventListener('click', unlockVideosOnce, { once: true });
     }
-  }
 
-  function setActive(next) {
-    frames.forEach((frame, i) => {
-      resetFrame(frame);
-      if (i === next) {
-        activateFrame(frame, i);
-      }
-    });
-    idx = next;
-  }
-
-  function scheduleNext() {
-    if (!playing) return;
-
-    const current = frames[idx];
-    const isVid = isVideo(current);
-    const dur = isVid ? videoDuration : imageDuration;
-
-    timer = setTimeout(() => {
-      const n = (idx + 1) % frames.length;
-      setActive(n);
-      scheduleNext();
-    }, dur);
-  }
-
-  function start() {
-    if (playing) return;
-    playing = true;
+    setActive(0);
     scheduleNext();
-  }
 
-  function stop() {
-    playing = false;
-    if (timer) clearTimeout(timer);
-    timer = null;
-
-    // Pause video
-    frames.forEach(frame => {
-      if (isVideo(frame)) {
-        try { frame.pause(); } catch (e) {}
-      }
-    });
-  }
-
-  setActive(0);
-  scheduleNext(); 
-
-  // Basic sync with audio
-  if (audioEl) {
-    audioEl.addEventListener('play', () => {
-      if (!playing) {
-        start();
-      }
-    });
-    audioEl.addEventListener('pause', () => {
-      stop();
-    });
-    audioEl.addEventListener('ended', () => {
-      stop();
-    });
-  }
-
-  // Pause when hidden 
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      stop();
-    } else if (!playing) {
-      start();
+    if (audio) {
+      audio.addEventListener('play', start);
+      audio.addEventListener('pause', stop);
+      audio.addEventListener('ended', stop);
     }
-  });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop();
+      else start();
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeReel, { once: true });
+  } else {
+    initializeReel();
+  }
 })();
