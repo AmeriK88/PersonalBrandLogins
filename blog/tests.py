@@ -1,7 +1,13 @@
+from importlib import import_module
+from types import SimpleNamespace
+
+from django.contrib import admin
+from django.apps import apps
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
-from django.test import TestCase, override_settings
+from django.db import connection
+from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
 from .admin import PostReelMediaInline
@@ -63,6 +69,54 @@ class BlogMultimediaTests(TestCase):
 		self.assertNotContains(response, 'id="about-narration"')
 		self.assertNotContains(response, 'id="about-audio-toggle"')
 
+	def test_reel_metadata_fields_are_optional_and_exposed_in_admin(self):
+		for field_name in ('reel_title', 'reel_description'):
+			field = Post._meta.get_field(field_name)
+			self.assertTrue(field.blank)
+			self.assertFalse(field.null)
+
+		post_admin = admin.site._registry[Post]
+		form = post_admin.get_form(RequestFactory().get('/admin/blog/post/add/'))
+		self.assertIn('reel_title', form.base_fields)
+		self.assertIn('reel_description', form.base_fields)
+		self.assertFalse(form.base_fields['reel_title'].required)
+		self.assertFalse(form.base_fields['reel_description'].required)
+		self.assertIn(PostReelMediaInline, post_admin.inlines)
+
+	def test_custom_reel_metadata_is_displayed_for_each_post(self):
+		post = self.make_post('Custom reel', 'custom-reel')
+		post.reel_title = 'Training Highlights'
+		post.reel_description = 'A look at this article’s key moments.'
+		post.save()
+		PostReelMedia.objects.create(
+			post=post,
+			media_type=PostReelMedia.IMAGE,
+			image='blog/reels/images/training.webp',
+		)
+
+		response = self.detail(post)
+
+		self.assertContains(response, 'Training Highlights')
+		self.assertContains(response, 'A look at this article’s key moments.')
+		self.assertNotContains(response, 'Recovery Reel')
+
+	def test_reel_without_metadata_uses_neutral_title_and_omits_empty_description(self):
+		post = self.make_post('Unconfigured reel', 'unconfigured-reel')
+		PostReelMedia.objects.create(
+			post=post,
+			media_type=PostReelMedia.IMAGE,
+			image='blog/reels/images/unconfigured.webp',
+		)
+
+		response = self.detail(post)
+		html = response.content.decode()
+
+		self.assertContains(response, 'Media Reel')
+		self.assertNotRegex(
+			html,
+			r'<p[^>]*class="small text-secondary mb-3 fade-in"[^>]*>\s*</p>',
+		)
+
 	def test_post_narration_and_reel_render_from_owned_media(self):
 		post = self.make_post('Has media', 'has-media')
 		post.narration_audio = 'blog/narration/story.mp3'
@@ -119,13 +173,111 @@ class BlogMultimediaTests(TestCase):
 		)
 		other = self.make_post('Another article', 'another-article')
 
+		migration = import_module(
+			'blog.migrations.0004_preserve_legacy_reel_metadata'
+		)
+		migration.populate_legacy_reel_metadata(
+			apps,
+			SimpleNamespace(connection=connection),
+		)
+		legacy.refresh_from_db()
 		legacy_response = self.detail(legacy)
 		other_response = self.detail(other)
 
+		self.assertContains(legacy_response, 'Recovery Reel')
+		self.assertContains(
+			legacy_response,
+			'Moments from the comeback — rehab, sweat, belief.',
+		)
 		self.assertContains(legacy_response, 'static/audio/narration.mp3')
 		self.assertContains(legacy_response, 'static/video/recovery-1.mp4')
 		self.assertNotContains(other_response, 'static/audio/narration.mp3')
 		self.assertNotContains(other_response, 'static/video/recovery-1.mp4')
+		self.assertNotContains(other_response, 'Recovery Reel')
+
+	def test_legacy_metadata_migration_preserves_custom_values_and_other_posts(self):
+		legacy = self.make_post(
+			'Original comeback article',
+			'watch-this-the-story-of-my-comeback',
+		)
+		legacy.reel_title = 'My customized title'
+		legacy.save(update_fields=['reel_title'])
+		other = self.make_post('Another article', 'another-article')
+		other.reel_description = 'Do not alter this article.'
+		other.save(update_fields=['reel_description'])
+
+		migration = import_module(
+			'blog.migrations.0004_preserve_legacy_reel_metadata'
+		)
+		migration.populate_legacy_reel_metadata(
+			apps,
+			SimpleNamespace(connection=connection),
+		)
+		legacy.refresh_from_db()
+		other.refresh_from_db()
+
+		self.assertEqual(legacy.reel_title, 'My customized title')
+		self.assertEqual(
+			legacy.reel_description,
+			'Moments from the comeback — rehab, sweat, belief.',
+		)
+		self.assertEqual(other.reel_title, '')
+		self.assertEqual(other.reel_description, 'Do not alter this article.')
+
+	def test_legacy_metadata_migration_succeeds_without_original_post(self):
+		other = self.make_post('Another article', 'another-article')
+		migration = import_module(
+			'blog.migrations.0004_preserve_legacy_reel_metadata'
+		)
+
+		migration.populate_legacy_reel_metadata(
+			apps,
+			SimpleNamespace(connection=connection),
+		)
+
+		other.refresh_from_db()
+		self.assertEqual(other.reel_title, '')
+		self.assertEqual(other.reel_description, '')
+
+	def test_uploaded_reel_media_takes_precedence_over_legacy_fallback(self):
+		post = self.make_post(
+			'Original comeback article',
+			'watch-this-the-story-of-my-comeback',
+		)
+		PostReelMedia.objects.create(
+			post=post,
+			media_type=PostReelMedia.IMAGE,
+			image='blog/reels/images/uploaded.webp',
+		)
+
+		response = self.detail(post)
+
+		self.assertContains(response, 'uploaded.webp')
+		self.assertNotContains(response, 'static/video/recovery-1.mp4')
+		self.assertNotContains(response, 'static/img/recovery/life.webp')
+
+	def test_narration_is_independent_between_articles(self):
+		audio_post = Post.objects.create(
+			title='Narrated article',
+			slug='narrated-article',
+			category='mindset',
+			content='Article text',
+			narration_audio='blog/narration/narrated.mp3',
+		)
+		reel_post = self.make_post('Unnarrated reel', 'unnarrated-reel')
+		PostReelMedia.objects.create(
+			post=reel_post,
+			media_type=PostReelMedia.IMAGE,
+			image='blog/reels/images/unnarrated.webp',
+		)
+
+		audio_response = self.detail(audio_post)
+		reel_response = self.detail(reel_post)
+
+		self.assertContains(audio_response, 'narrated.mp3')
+		self.assertNotContains(audio_response, 'unnarrated.webp')
+		self.assertContains(reel_response, 'unnarrated.webp')
+		self.assertNotContains(reel_response, 'narrated.mp3')
 
 	def test_inline_is_registered_for_post_admin(self):
 		from .admin import PostAdmin

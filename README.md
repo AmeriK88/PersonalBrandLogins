@@ -120,6 +120,8 @@ is_published
 created_at
 updated_at
 narration_audio (optional)
+reel_title (optional)
+reel_description (optional)
 ```
 
 ### **Blog — `PostReelMedia`**
@@ -134,7 +136,7 @@ alt_text
 
 ## Blog Multimedia Management
 
-Edit a post in Django Admin to upload its optional narration and add reel items in the inline. Choose the media type, upload the matching image or video, set its order, and provide alt text where appropriate. Reel items are private to their post; posts can have narration, a reel, both, or neither.
+Edit a post in Django Admin to set its optional reel title and description, upload narration, and add reel items in the inline. Choose the media type, upload the matching image or video, set its order, and provide alt text where appropriate. Reel items are private to their post; posts can have narration, a reel, both, or neither.
 
 In development, blog uploads are stored under `media/blog/`. With `ENVIRONMENT=production`, image files use Cloudinary's image resource type and narration/video files use its video resource type. Keep Cloudinary credentials configured on Railway; Railway's local filesystem is ephemeral and is not used for these production uploads.
 
@@ -226,4 +228,3 @@ Commercial use, redistribution, or offering this software as a service
 requires explicit permission from the author.
 
 © 2026 **José Félix**
-

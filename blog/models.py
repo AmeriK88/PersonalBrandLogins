@@ -26,6 +26,16 @@ class Post(models.Model):
         validators=[validate_audio_upload],
         blank=True,
     )
+    reel_title = models.CharField(
+        max_length=150,
+        blank=True,
+        help_text="Optional title displayed above the article reel.",
+    )
+    reel_description = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Optional short description displayed below the reel title.",
+    )
     is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
