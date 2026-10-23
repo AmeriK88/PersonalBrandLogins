@@ -1,4 +1,4 @@
-﻿import io
+import io
 import os
 from unittest import mock
 
@@ -211,3 +211,36 @@ class ExistingFileValidationTests(TestCase):
 
     def test_image_field_has_no_extra_validators(self):
         self.assertEqual(PostReelMedia._meta.get_field('image').validators, [])
+
+
+@override_settings(
+    ALLOWED_HOSTS=['testserver'],
+    STORAGES={
+        **settings.STORAGES,
+        'staticfiles': {'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage'},
+    },
+)
+class NarrationTemplateTests(TestCase):
+    def audio_tag(self, response):
+        import re
+        return re.search(r'<audio id="about-narration"[^>]*>', response.content.decode()).group(0)
+
+    def test_cloudinary_style_narration_uses_manual_playback(self):
+        post = Post.objects.create(title='N', slug='n', category='mindset', content='c')
+        Post.objects.filter(pk=post.pk).update(narration_audio='blog/narration/n_abc')
+        with mock.patch.object(Post._meta.get_field('narration_audio'), 'storage', FakeCloudinaryStorage('video')):
+            response = self.client.get(reverse('blog:detail', args=['n']))
+        tag = self.audio_tag(response)
+        self.assertNotIn('autoplay', tag)
+        self.assertNotIn('muted', tag)
+        self.assertIn('preload="none"', tag)
+        self.assertContains(response, 'https://res.cloudinary.com/demo/video/upload/blog/narration/n_abc')
+        self.assertContains(response, 'aria-pressed="false"')
+
+    def test_legacy_narration_fallback_uses_manual_playback(self):
+        Post.objects.create(title='L', slug='watch-this-the-story-of-my-comeback', category='mindset', content='c')
+        response = self.client.get(reverse('blog:detail', args=['watch-this-the-story-of-my-comeback']))
+        tag = self.audio_tag(response)
+        self.assertNotIn('autoplay', tag)
+        self.assertNotIn('muted', tag)
+        self.assertContains(response, 'static/audio/narration.mp3')
