@@ -6,7 +6,11 @@ from .models import FamilyPage, FamilyPhoto
 
 class FamilyPhotoInline(TabularInline):
     model = FamilyPhoto
-    fields = ('image', 'alt_text', 'caption', 'sort_order', 'is_visible')
+    fields = (
+        'image', 'alt_text', 'caption',
+        'photographer_name', 'photographer_url',
+        'sort_order', 'is_visible',
+    )
     ordering = ('sort_order', 'pk')
     extra = 2
 

@@ -123,6 +123,50 @@ class FamilyPageTests(TestCase):
         self.assertNotContains(response, hidden.image.name)
         self.assertNotContains(response, hidden.alt_text)
 
+    def test_gallery_photographer_credits(self):
+        page = self.create_page(is_published=True)
+        url = 'https://www.instagram.com/lynngindorff_photography/'
+        FamilyPhoto.objects.create(
+            page=page, image='family/gallery/a.jpg', alt_text='A',
+            caption='Caption A', photographer_name='@lynngindorff_photography',
+            photographer_url=url, sort_order=1,
+        )
+        FamilyPhoto.objects.create(
+            page=page, image='family/gallery/b.jpg', alt_text='B',
+            caption='Caption B', photographer_name='Jane <b>Doe</b>',
+            sort_order=2,
+        )
+        FamilyPhoto.objects.create(
+            page=page, image='family/gallery/c.jpg', alt_text='C',
+            caption='Caption C', sort_order=3,
+        )
+
+        html = self.get_overview().content.decode()
+
+        self.assertIn('Caption A', html)
+        self.assertIn('Caption B', html)
+        self.assertIn('Caption C', html)
+        self.assertIn(
+            f'<a href="{url}" target="_blank" rel="noopener noreferrer"',
+            html,
+        )
+        self.assertIn('>@lynngindorff_photography</a>', html)
+        self.assertIn('Jane &lt;b&gt;Doe&lt;/b&gt;', html)
+        self.assertNotIn('Jane <b>', html)
+        self.assertEqual(html.count('family-photo-credit--gallery'), 2)
+        self.assertEqual(html.count(f'href="{url}"'), 1)
+
+    def test_url_without_photographer_name_is_invalid(self):
+        page = self.create_page()
+        photo = FamilyPhoto(
+            page=page, image='family/gallery/a.jpg', alt_text='A',
+            photographer_url='https://example.com/',
+        )
+        with self.assertRaises(ValidationError):
+            photo.clean()
+        photo.photographer_name = 'Someone'
+        photo.clean()
+
     def test_singleton_database_constraint_rejects_another_page(self):
         self.create_page(title='Only Family Page')
 
@@ -148,8 +192,11 @@ class FamilyPageTests(TestCase):
         self.assertIs(FamilyPhotoInline.model, FamilyPhoto)
         self.assertEqual(
             FamilyPhotoInline.fields,
-            ('image', 'alt_text', 'caption', 'sort_order', 'is_visible'),
+            ('image', 'alt_text', 'caption', 'photographer_name',
+             'photographer_url', 'sort_order', 'is_visible'),
         )
+        self.assertTrue(FamilyPhoto._meta.get_field('photographer_name').blank)
+        self.assertTrue(FamilyPhoto._meta.get_field('photographer_url').blank)
 
         form = admin.site._registry[FamilyPage].get_form(
             RequestFactory().get('/admin/family/familypage/add/')

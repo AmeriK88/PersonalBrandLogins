@@ -76,6 +76,17 @@ class FamilyPhoto(models.Model):
     )
     alt_text = models.CharField(max_length=255)
     caption = models.CharField(max_length=255, blank=True)
+    photographer_name = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='Optional credit shown as "Photography by ...". '
+                  'Example: @lynngindorff_photography',
+    )
+    photographer_url = models.URLField(
+        blank=True,
+        help_text='Optional link for the photographer. '
+                  'Example: https://www.instagram.com/lynngindorff_photography/',
+    )
     sort_order = models.PositiveIntegerField(default=0)
     is_visible = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -85,3 +96,10 @@ class FamilyPhoto(models.Model):
 
     def __str__(self):
         return self.caption or f'Family photo {self.pk}'
+
+    def clean(self):
+        super().clean()
+        if self.photographer_url and not self.photographer_name.strip():
+            raise ValidationError({
+                'photographer_name': 'Provide a photographer name for the link.'
+            })

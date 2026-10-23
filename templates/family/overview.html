@@ -20,6 +20,11 @@
                 alt="{{ page.hero_image_alt }}"
                 class="family-hero-image fade-up delay-5"
                 fetchpriority="high">
+            <p class="family-photo-credit">Photography by
+                <a href="https://www.instagram.com/lynngindorff_photography/"
+                   target="_blank" rel="noopener noreferrer"
+                   aria-label="Photography by @lynngindorff_photography on Instagram (opens in a new tab)">@lynngindorff_photography</a>
+            </p>
         </div>
         {% endif %}
     </header>
@@ -57,8 +62,15 @@
                         alt="{{ photo.alt_text }}"
                         loading="lazy">
                 </div>
-                {% if photo.caption %}
-                <figcaption class="family-caption">{{ photo.caption }}</figcaption>
+                {% if photo.caption or photo.photographer_name %}
+                <figcaption class="family-caption">
+                    {% if photo.caption %}<span class="family-caption-text">{{ photo.caption }}</span>{% endif %}
+                    {% if photo.photographer_name %}
+                    <span class="family-photo-credit family-photo-credit--gallery">Photography by
+                        {% if photo.photographer_url %}<a href="{{ photo.photographer_url }}" target="_blank" rel="noopener noreferrer" aria-label="Photography by {{ photo.photographer_name }} (opens in a new tab)">{{ photo.photographer_name }}</a>{% else %}<span class="family-photo-credit-name">{{ photo.photographer_name }}</span>{% endif %}
+                    </span>
+                    {% endif %}
+                </figcaption>
                 {% endif %}
             </figure>
             {% endfor %}
