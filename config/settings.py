@@ -18,6 +18,7 @@ env = environ.Env(
 SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env.bool("DEBUG", default=False)
+ENVIRONMENT = env("ENVIRONMENT", default="development")
 
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
@@ -26,6 +27,24 @@ CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 CANONICAL_HOST = env("CANONICAL_HOST", default="")
+
+# ========== GOOGLE reCAPTCHA v3 ==========
+RECAPTCHA_SITE_KEY = env("RECAPTCHA_SITE_KEY", default="")
+RECAPTCHA_SECRET_KEY = env("RECAPTCHA_SECRET_KEY", default="")
+RECAPTCHA_MIN_SCORE = env.float("RECAPTCHA_MIN_SCORE", default=0.5)
+RECAPTCHA_EXPECTED_ACTION = "contact_submit"
+RECAPTCHA_ALLOW_LOCALHOST = env.bool("RECAPTCHA_ALLOW_LOCALHOST", default=False)
+
+RECAPTCHA_ALLOWED_HOSTNAMES = [
+    "gloginsjr.com",
+    "www.gloginsjr.com",
+]
+
+if DEBUG and ENVIRONMENT == "development" and RECAPTCHA_ALLOW_LOCALHOST:
+    RECAPTCHA_ALLOWED_HOSTNAMES.extend([
+        "localhost",
+        "127.0.0.1",
+    ])
 
 
 # APP definition
@@ -117,8 +136,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # ========== EMAIL & MEDIA CONFIG BY ENVIRONMENT ==========
-ENVIRONMENT = env("ENVIRONMENT", default="development")
-
 if ENVIRONMENT == "production":
     # Producyion: USE Gmail + App Password
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

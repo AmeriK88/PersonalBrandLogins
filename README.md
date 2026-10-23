@@ -194,6 +194,28 @@ Production:
 - Secure app-password authentication
 - Reply-To support
 - Production-safe headers
+- Google reCAPTCHA v3 verification on the server
+
+Configure `RECAPTCHA_SITE_KEY`, `RECAPTCHA_SECRET_KEY`, and (optionally)
+`RECAPTCHA_MIN_SCORE` (default `0.5`) in the environment for local development
+and Railway. Use Google-issued keys registered for `gloginsjr.com` and
+`www.gloginsjr.com`; never place the secret key in a template or client-side
+code. Localhost hostnames are accepted only when `DEBUG=True`,
+`ENVIRONMENT=development`, and `RECAPTCHA_ALLOW_LOCALHOST=True`.
+
+The contact form verifies each fresh `contact_submit` token with Google's
+verification endpoint before sending email, validates its score, action, and
+hostname, and rejects invalid form data and populated honeypot submissions.
+The Google reCAPTCHA badge remains visible. The privacy policy explains the
+Google data processing.
+
+No shared cache or other reliable distributed rate-limiting backend is
+configured in this project, so contact submissions are not currently
+rate-limited. Django's default local-memory cache would not provide reliable
+limits across Railway instances and must not be treated as production
+protection. Add and configure an approved shared backend, and use a
+proxy-trustworthy client IP source, before implementing production rate
+limits. reCAPTCHA verification remains enforced independently.
 
 ---
 

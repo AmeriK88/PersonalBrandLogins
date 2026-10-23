@@ -52,23 +52,61 @@
                 </div>
                 {% endif %}
 
-                <form method="POST" class="contact-form card p-4 border-0 shadow-sm bg-dark fade-up">
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger mb-4" role="alert">
+                    {{ form.non_field_errors }}
+                </div>
+                {% endif %}
+
+                <form
+                    method="POST"
+                    id="contact-form"
+                    class="contact-form card p-4 border-0 shadow-sm bg-dark fade-up">
                     {% csrf_token %}
+                    {{ form.recaptcha_token }}
+                    <div class="visually-hidden" aria-hidden="true">
+                        <label for="{{ form.website.id_for_label }}">Leave this field empty</label>
+                        {{ form.website }}
+                    </div>
+                    <div
+                        id="recaptcha-error"
+                        class="alert alert-danger d-none"
+                        role="alert"
+                        aria-live="assertive"></div>
                     <div class="row g-3">
                         <div class="col-md-6 fade-in">
-                            <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+                            <label class="visually-hidden" for="{{ form.name.id_for_label }}">Your Name</label>
+                            {{ form.name }}
+                            {% for error in form.name.errors %}
+                            <div class="text-warning small mt-1">{{ error }}</div>
+                            {% endfor %}
                         </div>
                         <div class="col-md-6 fade-in delay-1">
-                            <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+                            <label class="visually-hidden" for="{{ form.email.id_for_label }}">Your Email</label>
+                            {{ form.email }}
+                            {% for error in form.email.errors %}
+                            <div class="text-warning small mt-1">{{ error }}</div>
+                            {% endfor %}
                         </div>
                         <div class="col-12 fade-in delay-2">
-                            <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+                            <label class="visually-hidden" for="{{ form.subject.id_for_label }}">Subject</label>
+                            {{ form.subject }}
+                            {% for error in form.subject.errors %}
+                            <div class="text-warning small mt-1">{{ error }}</div>
+                            {% endfor %}
                         </div>
                         <div class="col-12 fade-in delay-3">
-                            <textarea name="message" rows="5" class="form-control" placeholder="Your Message" required></textarea>
+                            <label class="visually-hidden" for="{{ form.message.id_for_label }}">Your Message</label>
+                            {{ form.message }}
+                            {% for error in form.message.errors %}
+                            <div class="text-warning small mt-1">{{ error }}</div>
+                            {% endfor %}
                         </div>
                         <div class="col-12 text-end mt-3 fade-up delay-4">
-                            <button type="submit" class="btn btn-outline-gold px-5 py-2">
+                            <button
+                                type="submit"
+                                id="contact-submit"
+                                class="btn btn-outline-gold px-5 py-2">
                                 SEND MESSAGE
                             </button>
                         </div>
@@ -79,4 +117,67 @@
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+{% if recaptcha_site_key %}
+<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key|urlencode }}" defer></script>
+{% endif %}
+<script>
+    (() => {
+        const form = document.getElementById("contact-form");
+        if (!form) return;
+
+        const siteKey = "{{ recaptcha_site_key|escapejs }}";
+        const tokenField = document.getElementById("recaptcha-token");
+        const submitButton = document.getElementById("contact-submit");
+        const errorMessage = document.getElementById("recaptcha-error");
+        let isSubmitting = false;
+
+        const showError = (message) => {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove("d-none");
+        };
+
+        const getToken = () => new Promise((resolve, reject) => {
+            const timeout = window.setTimeout(() => reject(new Error("timeout")), 10000);
+            if (!siteKey || !window.grecaptcha) {
+                window.clearTimeout(timeout);
+                reject(new Error("unavailable"));
+                return;
+            }
+
+            window.grecaptcha.ready(() => {
+                window.grecaptcha.execute(siteKey, {action: "contact_submit"})
+                    .then(resolve)
+                    .catch(reject)
+                    .finally(() => window.clearTimeout(timeout));
+            });
+        });
+
+        form.addEventListener("submit", async (event) => {
+            if (isSubmitting) {
+                event.preventDefault();
+                return;
+            }
+
+            event.preventDefault();
+            isSubmitting = true;
+            errorMessage.classList.add("d-none");
+            submitButton.disabled = true;
+
+            try {
+                const token = await getToken();
+                if (!token) throw new Error("empty token");
+                tokenField.value = token;
+                HTMLFormElement.prototype.submit.call(form);
+            } catch {
+                isSubmitting = false;
+                tokenField.value = "";
+                submitButton.disabled = false;
+                showError("We couldn't verify your submission. Please try again.");
+            }
+        });
+    })();
+</script>
 {% endblock %}
