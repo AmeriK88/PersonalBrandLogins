@@ -9,17 +9,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Basic SEO -->
-    <meta name="description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach, Mentor and Educator. Discover his professional journey, highlights, and insights from the court and classroom.">
+    <meta name="description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Mentor and Educator. Discover his professional journey, highlights, and insights from the court and classroom.">
     <meta name="author" content="Greg Logins Jr">
     <meta name="robots" content="index, follow">
     <!-- Optional -->
-    <meta name="keywords" content="Greg Logins Jr, professional basketball, basketball coach, player development, student athlete mentoring, leadership, sports mentorship">
+    <meta name="keywords" content="Greg Logins Jr, professional basketball, basketball mentor, player development, student athlete mentoring, leadership, sports mentorship">
 
     <!-- Open Graph (Facebook, LinkedIn, etc.) -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Greg Logins Jr">
     <meta property="og:title" content="Greg Logins Jr · Official Site">
-    <meta property="og:description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Coach and Educator.">
+    <meta property="og:description" content="Official portfolio of Greg Logins Jr – Professional Basketball Player, Mentor and Educator.">
 
     <!-- Imag SHARE (logo) -->
     <meta property="og:image" content="{% static 'img/favicon/greg-logo.webp' %}">
@@ -29,7 +29,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Greg Logins Jr · Professional Basketball Player & Coach">
+    <meta name="twitter:title" content="Greg Logins Jr · Professional Basketball Player & Mentor">
     <meta name="twitter:description" content="Insights, highlights and the journey of professional basketball player and mentor Greg Logins Jr.">
     <meta name="twitter:image" content="{% static 'img/favicon/greg-logo.webp' %}">
 
@@ -107,6 +107,13 @@
                     </li>
 
                     <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'family' %}active{% endif %}"
+                        href="{% url 'family:overview' %}">
+                            <span class="nav-link-label">FAMILY</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.app_name == 'career' %}active{% endif %}"
                         href="{% url 'career:overview' %}">
                             <span class="nav-link-label">CAREER</span>
@@ -163,6 +170,7 @@
                     <p class="footer-label mb-2">Explore</p>
                     <ul class="list-unstyled mb-0 footer-nav">
                         <li><a href="{% url 'core:about' %}">About</a></li>
+                        <li><a href="{% url 'family:overview' %}">Family</a></li>
                         <li><a href="{% url 'career:overview' %}">Career</a></li>
                         <li><a href="{% url 'highlights:gallery' %}">Highlights</a></li>
                         <li><a href="{% url 'core:privacy' %}">Privacy Policy</a></li>

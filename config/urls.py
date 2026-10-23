@@ -10,6 +10,7 @@ urlpatterns = [
     path("career/", include("career.urls")),
     path("highlights/", include("highlights.urls")),
     path("blog/", include("blog.urls")), 
+    path("family/", include("family.urls")),
     path(
         "service-worker.js",
         TemplateView.as_view(

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }} · Greg Logins Jr{% endblock %}
+
+{% block content %}
+<section class="family-section">
+    <header class="family-hero">
+        <div class="container family-hero-content text-center">
+            <p class="section-eyebrow family-hero-eyebrow mb-3 fade-in delay-1">FAMILY</p>
+            <h1 class="family-title fade-up delay-2">{{ page.title }}</h1>
+            {% if page.subtitle %}
+            <p class="family-subtitle fade-up delay-3">{{ page.subtitle }}</p>
+            {% endif %}
+            <span class="family-hero-divider fade-in delay-4" aria-hidden="true"></span>
+        </div>
+        {% if page.hero_image %}
+        <div class="family-hero-media">
+            <img
+                src="{{ page.hero_image.url }}"
+                alt="{{ page.hero_image_alt }}"
+                class="family-hero-image fade-up delay-5"
+                fetchpriority="high">
+        </div>
+        {% endif %}
+    </header>
+
+    {% if page.introduction or page.family_reflection %}
+    <section class="container family-story py-5">
+        <h2 class="about-subtitle mb-4 fade-in">Beyond the Game</h2>
+        <div class="family-story-content {% if not page.introduction or not page.family_reflection %}family-story-single{% endif %}">
+            {% if page.introduction %}
+            <div class="family-intro fade-up">
+                <div class="family-copy">{{ page.introduction|linebreaks }}</div>
+            </div>
+            {% endif %}
+            {% if page.family_reflection %}
+            <div class="family-reflection fade-up">
+                <div class="family-copy">{{ page.family_reflection|linebreaks }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if photos %}
+    <section class="container family-gallery-section py-5">
+        <div class="family-gallery-heading mb-4 fade-in">
+            <p class="section-eyebrow mb-2">THE MOMENTS THAT MATTER</p>
+            <h2 class="section-title mb-0">A Life Beyond the Game</h2>
+        </div>
+        <div class="row g-4 family-gallery">
+            {% for photo in photos %}
+            <figure class="col-md-6 col-lg-4 mb-0 fade-up">
+                <div class="family-photo">
+                    <img
+                        src="{{ photo.image.url }}"
+                        alt="{{ photo.alt_text }}"
+                        loading="lazy">
+                </div>
+                {% if photo.caption %}
+                <figcaption class="family-caption">{{ photo.caption }}</figcaption>
+                {% endif %}
+            </figure>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if page.closing_quote %}
+    <section class="container family-quote-section py-5">
+        <blockquote class="family-quote fade-up">
+            <p>{{ page.closing_quote|linebreaksbr }}</p>
+        </blockquote>
+    </section>
+    {% endif %}
+</section>
+{% endblock %}

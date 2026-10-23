@@ -98,6 +98,11 @@ Each entry includes:
 - Integrated narration with audio controls  
 - Per-article narration and ordered reel items managed in Django Admin
 
+### Family Section
+- Single unpublished-by-default page, managed through Django Admin
+- Optional editorial content, approved hero image, and ordered, hideable gallery
+- Uploads use UUID filenames and reject photos containing GPS EXIF metadata
+
 ### 🎨 Design System
 - Black & Gold premium palette  
 - Elegant typography  
@@ -163,6 +168,10 @@ country
 achievements
 image
 ```
+
+### Family Page Management
+
+Create the single Family page in Django Admin, add only Greg-approved text and photographs, and publish it when it is ready. The page returns 404 until explicitly published. Gallery images use the existing default media storage (local storage in development and Cloudinary in production); generated UUID filenames avoid exposing original filenames. Uploaded images containing GPS EXIF data are rejected and must have that location metadata removed before upload. Hidden gallery entries are not displayed, but their already-uploaded media URLs are not private. Review every image and its metadata before publication; this check does not make media private or sanitize existing uploads.
 
 ---
 
