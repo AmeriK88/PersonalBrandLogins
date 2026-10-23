@@ -1,9 +1,21 @@
 from pathlib import Path
 
 from django.core.exceptions import ValidationError
+from django.db.models.fields.files import FieldFile
+
+
+def _is_persisted_file(value):
+    # Only genuine FieldFile instances count; an arbitrary object exposing
+    # `_committed` is not trusted. Uploads are wrapped as uncommitted FieldFiles.
+    return isinstance(value, FieldFile) and value._committed
 
 
 def _file_signature(value, allowed_extensions, signature_check, label):
+    # Stored Cloudinary public IDs have no extension and reading them would
+    # trigger a remote download; they were validated when first uploaded.
+    if _is_persisted_file(value):
+        return
+
     extension = Path(value.name).suffix.lower()
     if extension not in allowed_extensions:
         raise ValidationError(f'Unsupported {label} file extension.')
