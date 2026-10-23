@@ -1,4 +1,7 @@
 (function () {
+  const PLAY_LABEL = '\uD83D\uDD0A Play Narration';
+  const PAUSE_LABEL = '\uD83D\uDD07 Pause Narration';
+
   function initializeAudio() {
     const audio = document.getElementById('about-narration');
     const btn = document.getElementById('about-audio-toggle');
@@ -6,66 +9,42 @@
     if (audio.dataset.initialized === 'true') return;
     audio.dataset.initialized = 'true';
 
-    // Initial btn state
     function setBtnPlayingUI(playing) {
       btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
-      btn.textContent = playing ? '🔇 Pause Narration' : '🔊 Play Narration';
+      btn.setAttribute('aria-label', playing ? 'Pause narration' : 'Play narration');
+      btn.textContent = playing ? PAUSE_LABEL : PLAY_LABEL;
     }
 
-    // Silence autoplay (permitido)
-    const tryAutoplayMuted = async () => {
-      try {
-        audio.muted = true;
-        await audio.play();
-      } catch (_) {}
-    };
-    tryAutoplayMuted();
-
-    // Unmute at 1st interaction
-    const enableSoundOnce = async () => {
-      if (!audio) return;
-      if (!audio.muted) return;
-
-      try {
-        audio.muted = false;
-        await audio.play();
-        setBtnPlayingUI(true);
-      } catch (_) {
-        // fallback
-        setBtnPlayingUI(false);
-      }
-
-      // Remove listener
-      document.removeEventListener('click', enableSoundOnce);
-    };
-
-    // Click listener
-    document.addEventListener('click', enableSoundOnce, { once: true });
-
-    // Play/pause btn
-    btn.addEventListener('click', async () => {
-      if (audio.paused) {
+    // Manual playback only: audible play() must run synchronously inside this
+    // trusted click handler (iOS Safari rejects it otherwise).
+    btn.addEventListener('click', () => {
+      if (audio.paused || audio.ended) {
         audio.muted = false;
         try {
-          await audio.play();
-          setBtnPlayingUI(true);
+          const playback = audio.play();
+          if (playback && typeof playback.catch === 'function') {
+            playback.catch(() => setBtnPlayingUI(false));
+          }
         } catch (_) {
           setBtnPlayingUI(false);
         }
       } else {
         audio.pause();
-        setBtnPlayingUI(false);
       }
     });
 
-    // Reflect state
+    // The button always mirrors the real playback state.
+    audio.addEventListener('playing', () => setBtnPlayingUI(true));
     audio.addEventListener('play', () => setBtnPlayingUI(true));
     audio.addEventListener('pause', () => setBtnPlayingUI(false));
+    audio.addEventListener('ended', () => setBtnPlayingUI(false));
+    audio.addEventListener('error', () => setBtnPlayingUI(false));
 
-    // Pause if minimize/hidden
     document.addEventListener('visibilitychange', () => {
       if (document.hidden && !audio.paused) audio.pause();
     });
+
+    setBtnPlayingUI(!audio.paused);
   }
 
   if (document.readyState === 'loading') {

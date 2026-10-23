@@ -122,12 +122,16 @@
     frames.forEach((frame) => {
       if (isVideo(frame)) frame.addEventListener('error', advanceAfterVideoError);
     });
-    document.addEventListener('touchstart', unlockVideosOnce, { once: true });
-    document.addEventListener('click', unlockVideosOnce, { once: true });
     const narrationButton = document.getElementById('about-audio-toggle');
-    if (narrationButton) {
-      narrationButton.addEventListener('click', unlockVideosOnce, { once: true });
-    }
+    // Never run video unlocking during a narration-button interaction.
+    const unlockFromGesture = (event) => {
+      if (narrationButton && event.target instanceof Node && narrationButton.contains(event.target)) return;
+      document.removeEventListener('touchstart', unlockFromGesture);
+      document.removeEventListener('click', unlockFromGesture);
+      unlockVideosOnce();
+    };
+    document.addEventListener('touchstart', unlockFromGesture);
+    document.addEventListener('click', unlockFromGesture);
 
     setActive(0);
     scheduleNext();

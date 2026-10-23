@@ -6,7 +6,7 @@
 {% block content %}
 <section class="page-section blog-detail-section py-5 fade-in">
     {% if post.narration_audio or legacy_multimedia %}
-    <audio id="about-narration" preload="auto" autoplay muted>
+    <audio id="about-narration" preload="none">
         {% if post.narration_audio %}
         <source src="{{ post.narration_audio.url }}">
         {% else %}
