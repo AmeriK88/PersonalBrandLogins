@@ -1,14 +1,16 @@
 {% load static %}
 
-const CACHE_VERSION = 'v2';  // <-- súbelo cuando hagas cambios importantes
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `gregloginsjr-${CACHE_VERSION}`;
 
 // Rutas que quieres precachear (app shell: solo estáticos, no hace falta HTML)
 const URLS_TO_CACHE = [
   '{% static "css/main.css" %}',
+  '{% static "css/highlights.css" %}',
   '{% static "js/core/stats.js" %}',
   '{% static "js/core/animate-onload.js" %}',
   '{% static "js/core/share.js" %}',
+  '{% static "js/core/highlights-archive.js" %}',
   '{% static "img/greg-logo.png" %}',
 ];
 

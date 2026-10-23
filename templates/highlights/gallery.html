@@ -3,131 +3,229 @@
 
 {% block title %}Highlights · Greg Logins Jr{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/highlights.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="page-section py-5">
-    <div class="container">
-        <p class="section-eyebrow mb-2 fade-in">HIGHLIGHTS</p>
-        <h1 class="section-title mb-4 fade-up">Media & Highlights</h1>
-        <p class="section-lead mb-5 text-secondary fade-up">
-            A look into Greg's journey through basketball — from game action and training sessions to interviews and media appearances.
-        </p>
+<div class="highlights-archive">
+    <section class="archive-hero" aria-labelledby="archive-title">
+        {% if hero_image %}
+        <img
+            class="archive-hero-image"
+            src="{{ hero_image }}"
+            alt=""
+            fetchpriority="high">
+        {% endif %}
+        <div class="archive-hero-shade" aria-hidden="true"></div>
+        <div class="container archive-hero-content">
+            <p class="archive-eyebrow fade-in">GREG LOGINS JR. / THE ARCHIVE</p>
+            <h1 id="archive-title" class="archive-title fade-up">EVERY MOMENT MATTERS.</h1>
+            <p class="archive-intro fade-up">
+                From the intensity of game night to the moments that define a career.
+                Explore the journey through the lens.
+            </p>
+            <a class="archive-cta fade-in" href="#archive-first-section">
+                EXPLORE THE ARCHIVE <span aria-hidden="true">↓</span>
+            </a>
+        </div>
+        <span class="archive-hero-index" aria-hidden="true">G / 01</span>
+    </section>
 
-        <!-- PHOTOS -->
-        <div class="mb-5">
-            <h2 class="about-subtitle mb-4 fade-in">Photos</h2>
-            <div class="row g-4">
-                {% for photo in photos %}
-                <div class="col-md-6 col-lg-4 fade-up">
-                    <div class="highlight-card h-100">
-                        {% if photo.image %}
-                            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" class="highlight-image fade-in">
+    {% if photos or videos or press %}
+        {% if photos %}
+        <section
+            class="archive-section archive-photos"
+            id="archive-first-section"
+            aria-labelledby="archive-photos-title">
+            <div class="container">
+                <div class="archive-section-heading">
+                    <p class="archive-eyebrow">STILL FRAMES</p>
+                    <h2 id="archive-photos-title">Through the Lens</h2>
+                    <p>Game nights, quiet work, and everything in between.</p>
+                </div>
+                <div class="archive-photo-grid">
+                    {% for photo in photos %}
+                    <article class="archive-photo-item">
+                        {% if photo.archive_image_url %}
+                        <a
+                            class="archive-photo-link"
+                            href="{{ photo.archive_image_url }}"
+                            data-photo-viewer
+                            data-photo-title="{{ photo.title }}"
+                            data-photo-description="{{ photo.description|default:'' }}"
+                            aria-label="View photo: {{ photo.title }}">
+                            <img
+                                src="{{ photo.archive_image_url }}"
+                                alt="{{ photo.title }}"
+                                loading="lazy"
+                                decoding="async">
+                            <span class="archive-photo-open" aria-hidden="true">＋</span>
+                        </a>
                         {% endif %}
-                        <div class="p-3">
-                            <p class="fw-bold mb-1">{{ photo.title }}</p>
+                        <div class="archive-item-copy">
+                            <h3>{{ photo.title }}</h3>
                             {% if photo.description %}
-                                <p class="small mb-3 text-secondary">{{ photo.description }}</p>
+                            <p>{{ photo.description }}</p>
                             {% endif %}
-
-                            {% if photo.video_url or photo.press_link %}
-                            <div class="d-flex flex-wrap gap-2">
-                                {% if photo.video_url %}
-                                    <a href="{{ photo.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm">
-                                        Watch video
-                                    </a>
+                            {% if photo.safe_video_url or photo.safe_press_link %}
+                            <div class="archive-links">
+                                {% if photo.safe_video_url %}
+                                <a href="{{ photo.safe_video_url }}" target="_blank" rel="noopener noreferrer">Watch video ↗</a>
                                 {% endif %}
-                                {% if photo.press_link %}
-                                    <a href="{{ photo.press_link }}" target="_blank" class="btn btn-outline-gold btn-sm">
-                                        Read article
-                                    </a>
+                                {% if photo.safe_press_link %}
+                                <a href="{{ photo.safe_press_link }}" target="_blank" rel="noopener noreferrer">Read article ↗</a>
                                 {% endif %}
                             </div>
                             {% endif %}
                         </div>
-                    </div>
+                    </article>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <p>No photos yet.</p>
-                {% endfor %}
             </div>
-        </div>
+        </section>
+        {% endif %}
 
-        <!-- VIDEOS -->
-        <div class="mb-5">
-            <h2 class="about-subtitle mb-4 fade-in">Videos</h2>
-            <div class="row g-4">
-                {% for video in videos %}
-                <div class="col-md-6 col-lg-4 fade-up">
-                    <div class="highlight-card h-100">
-                        {% if video.image %}
-                            <img src="{{ video.image.url }}" alt="{{ video.title }}" class="highlight-image fade-in">
-                        {% endif %}
-                        <div class="p-3">
-                            <p class="fw-bold mb-1">{{ video.title }}</p>
+        {% if videos %}
+        <section
+            class="archive-section archive-games"
+            {% if not photos %}id="archive-first-section"{% endif %}
+            aria-labelledby="archive-games-title">
+            <div class="container">
+                <div class="archive-section-heading">
+                    <p class="archive-eyebrow">ON THE COURT</p>
+                    <h2 id="archive-games-title">Game Film</h2>
+                    <p>Moments made for the big screen. Press play when you’re ready.</p>
+                </div>
+                <div class="archive-video-grid">
+                    {% for video in videos %}
+                    <article class="archive-video-item">
+                        <div class="archive-video-poster">
+                            {% if video.archive_image_url %}
+                            <img
+                                src="{{ video.archive_image_url }}"
+                                alt="{{ video.title }}"
+                                loading="lazy"
+                                decoding="async">
+                            {% endif %}
+                            {% if video.video_embed_url %}
+                            <button
+                                class="archive-play-button"
+                                type="button"
+                                data-video-viewer
+                                data-video-embed="{{ video.video_embed_url }}"
+                                data-video-title="{{ video.title }}"
+                                aria-label="Play {{ video.title }}">
+                                <span aria-hidden="true">▶</span>
+                            </button>
+                            {% elif video.safe_video_url %}
+                            <a
+                                class="archive-play-button"
+                                href="{{ video.safe_video_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label="Open {{ video.title }} video">
+                                <span aria-hidden="true">↗</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                        <div class="archive-item-copy">
+                            <h3>{{ video.title }}</h3>
                             {% if video.description %}
-                                <p class="small mb-3 text-secondary">{{ video.description }}</p>
+                            <p>{{ video.description }}</p>
                             {% endif %}
-
-                            {% if video.video_url or video.press_link %}
-                            <div class="d-flex flex-wrap gap-2">
-                                {% if video.video_url %}
-                                    <a href="{{ video.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm">
-                                        Watch video
-                                    </a>
+                            <div class="archive-links">
+                                {% if video.safe_video_url %}
+                                <a href="{{ video.safe_video_url }}" target="_blank" rel="noopener noreferrer">Open original video ↗</a>
                                 {% endif %}
-                                {% if video.press_link %}
-                                    <a href="{{ video.press_link }}" target="_blank" class="btn btn-outline-gold btn-sm">
-                                        Read article
-                                    </a>
+                                {% if video.safe_press_link %}
+                                <a href="{{ video.safe_press_link }}" target="_blank" rel="noopener noreferrer">Read article ↗</a>
                                 {% endif %}
                             </div>
-                            {% endif %}
                         </div>
-                    </div>
+                    </article>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <p>No videos yet.</p>
-                {% endfor %}
             </div>
-        </div>
+        </section>
+        {% endif %}
 
-        <!-- PRESS -->
-        <div>
-            <h2 class="about-subtitle mb-4 fade-in">Press & Interviews</h2>
-            <div class="row g-4">
-                {% for p in press %}
-                <div class="col-md-6 col-lg-4 fade-up">
-                    <div class="highlight-card h-100">
-                        {% if p.image %}
-                            <img src="{{ p.image.url }}" alt="{{ p.title }}" class="highlight-image fade-in">
+        {% if press %}
+        <section
+            class="archive-section archive-press"
+            {% if not photos and not videos %}id="archive-first-section"{% endif %}
+            aria-labelledby="archive-press-title">
+            <div class="container">
+                <div class="archive-section-heading">
+                    <p class="archive-eyebrow">IN THE CONVERSATION</p>
+                    <h2 id="archive-press-title">Beyond the Game</h2>
+                    <p>Stories and conversations from beyond the court.</p>
+                </div>
+                <div class="archive-press-grid">
+                    {% for item in press %}
+                    <article class="archive-press-item">
+                        {% if item.archive_image_url %}
+                        <img
+                            class="archive-press-image"
+                            src="{{ item.archive_image_url }}"
+                            alt="{{ item.title }}"
+                            loading="lazy"
+                            decoding="async">
                         {% endif %}
-                        <div class="p-3">
-                            <p class="fw-bold mb-1">{{ p.title }}</p>
-                            {% if p.description %}
-                                <p class="small mb-3 text-secondary">{{ p.description }}</p>
+                        <div class="archive-press-copy">
+                            <p class="archive-eyebrow">FEATURE / INTERVIEW</p>
+                            <h3>{{ item.title }}</h3>
+                            {% if item.description %}
+                            <p>{{ item.description }}</p>
                             {% endif %}
-
-                            {% if p.video_url or p.press_link %}
-                            <div class="d-flex flex-wrap gap-2">
-                                {% if p.video_url %}
-                                    <a href="{{ p.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm">
-                                        Watch interview
-                                    </a>
+                            <div class="archive-links">
+                                {% if item.safe_press_link %}
+                                <a href="{{ item.safe_press_link }}" target="_blank" rel="noopener noreferrer">READ STORY ↗</a>
                                 {% endif %}
-                                {% if p.press_link %}
-                                    <a href="{{ p.press_link }}" target="_blank" class="btn btn-outline-gold btn-sm">
-                                        Read article
-                                    </a>
+                                {% if item.safe_video_url %}
+                                <a href="{{ item.safe_video_url }}" target="_blank" rel="noopener noreferrer">WATCH INTERVIEW ↗</a>
+                                {% endif %}
+                                {% if item.video_embed_url %}
+                                <button
+                                    class="archive-text-button"
+                                    type="button"
+                                    data-video-viewer
+                                    data-video-embed="{{ item.video_embed_url }}"
+                                    data-video-title="{{ item.title }}">Play interview</button>
                                 {% endif %}
                             </div>
-                            {% endif %}
                         </div>
-                    </div>
+                    </article>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <p>No press items yet.</p>
-                {% endfor %}
             </div>
+        </section>
+        {% endif %}
+    {% else %}
+    <section class="archive-empty" id="archive-first-section">
+        <div class="container">
+            <p class="archive-eyebrow">THE STORY IS UNFOLDING</p>
+            <h2>The archive is taking shape.</h2>
+            <p>New moments will find their place here.</p>
         </div>
-    </div>
-</section>
+    </section>
+    {% endif %}
+
+    <section class="archive-closing" aria-labelledby="archive-closing-title">
+        <div class="container">
+            <p class="archive-eyebrow">ALWAYS IN MOTION</p>
+            <h2 id="archive-closing-title">THE JOURNEY CONTINUES.</h2>
+            <p>More than highlights. A career built one moment at a time.</p>
+        </div>
+    </section>
+
+    <dialog class="archive-viewer" aria-label="Media viewer">
+        <button class="archive-viewer-close" type="button" data-viewer-close aria-label="Close media viewer">×</button>
+        <div class="archive-viewer-content"></div>
+    </dialog>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/core/highlights-archive.js' %}" defer></script>
 {% endblock %}
