@@ -15,6 +15,7 @@ class FakeNode {
     this.listeners = {};
     this.attrs = {};
     this.dataset = {};
+    this.style = {};
     this.classes = new Set();
     this.children = [];
     this.textContent = '';
@@ -30,7 +31,7 @@ class FakeNode {
       remove: (...c) => c.forEach((x) => this.classes.delete(x)),
     };
   }
-  addEventListener(type, fn) { (this.listeners[type] ||= []).push(fn); }
+  addEventListener(type, fn, capture) { if (capture === true && type === 'error') this.captureErrorListener = true; (this.listeners[type] ||= []).push(fn); }
   removeEventListener(type, fn) { this.listeners[type] = (this.listeners[type] || []).filter((f) => f !== fn); }
   setAttribute(k, v) { this.attrs[k] = String(v); }
   getAttribute(k) { return k in this.attrs ? this.attrs[k] : null; }
@@ -51,7 +52,7 @@ class FakeNode {
   }
 }
 
-function setup({ withReel = false, ua = 'iPhone', videoCount = 1 } = {}) {
+function setup({ withReel = false, ua = 'iPhone', videoCount = 1, search = '' } = {}) {
   const audio = new FakeNode('about-narration', 'audio');
   audio.playImpl = () => { audio.paused = false; audio.dispatch('play'); audio.dispatch('playing'); return Promise.resolve(); };
   const btn = new FakeNode('about-audio-toggle', 'button');
@@ -60,6 +61,10 @@ function setup({ withReel = false, ua = 'iPhone', videoCount = 1 } = {}) {
   document.readyState = 'complete';
   document.hidden = false;
   document.getElementById = (id) => nodes[id] || null;
+  document.createElement = (tag) => new FakeNode('', tag);
+  const holder = new FakeNode('holder');
+  holder.insertBefore = () => { holder.insertedInto = true; };
+  btn.parentNode = holder;
   let reel = null;
   const videos = [];
   if (withReel) {
@@ -73,13 +78,15 @@ function setup({ withReel = false, ua = 'iPhone', videoCount = 1 } = {}) {
     document,
     Node: FakeNode,
     navigator: { userAgent: ua },
-    window: { setTimeout: () => 1, clearTimeout() {} },
+    window: { setTimeout: () => 1, clearTimeout() {}, location: { search }, navigator: { serviceWorker: { controller: null } } },
+    URLSearchParams,
+    console: { warn() {}, info() {} },
     Number, Array, Promise,
   };
   vm.createContext(context);
   vm.runInContext(read('blog-audio.js'), context);
   if (withReel) vm.runInContext(read('recovery-reel.js'), context);
-  return { audio, btn, document, reel, videos };
+  return { audio, btn, document, reel, videos, holder };
 }
 
 test('initial state is paused with no autoplay or document click listener', () => {
@@ -178,4 +185,58 @@ test('reel sync reacts to narration pause without touching narration', () => {
   assert.equal(audio.playCalls, 1);
   assert.equal(audio.pauseCalls, 1);
   assert.ok(videos[0].pauseCalls > 0);
+});
+
+test('capture-phase error listener catches <source> failures and resets the button', () => {
+  const { audio, btn } = setup();
+  btn.dispatch('click');
+  assert.equal(audio.captureErrorListener, true);
+  audio.dispatch('error');
+  assert.equal(btn.getAttribute('aria-pressed'), 'false');
+  assert.equal(btn.dataset.narrationError, 'media-error');
+});
+
+test('failed playback records a diagnostic without exposing it in the UI text', async () => {
+  const { audio, btn } = setup();
+  audio.playImpl = () => Promise.reject(Object.assign(new Error('x'), { name: 'NotAllowedError' }));
+  btn.dispatch('click');
+  await new Promise((r) => setImmediate(r));
+  assert.equal(btn.dataset.narrationError, 'play-rejected');
+  assert.doesNotMatch(btn.textContent, /NotAllowed|error/i);
+});
+
+test('diagnostic mode is off by default and enables native controls only with ?narration_debug=1', () => {
+  const normal = setup();
+  assert.notEqual(normal.audio.controls, true);
+  assert.equal(normal.holder.insertedInto, undefined);
+  const debug = setup({ search: '?narration_debug=1' });
+  assert.equal(debug.audio.controls, true);
+  assert.equal(debug.audio.preload, 'metadata');
+  assert.ok(debug.holder.insertedInto);
+});
+
+test('service worker bypasses media and Range requests and uses a bumped cache version', () => {
+  const src = fs.readFileSync(path.join(__dirname, '..', 'templates', 'service-worker.js'), 'utf8')
+    .replace(/{% load[^%]*%}/g, '').replace(/{%[^%]*%}/g, 'x');
+  const handlers = {};
+  const fetched = [];
+  const sw = {
+    addEventListener: (t, fn) => { handlers[t] = fn; },
+    skipWaiting() {}, clients: { claim() {} },
+    location: { origin: 'https://site.test' },
+  };
+  vm.runInNewContext(src, { self: sw, caches: { open: async () => ({ addAll: async () => {}, put: async () => {} }), keys: async () => [], match: async () => undefined }, fetch: (r) => { fetched.push(r); return Promise.resolve({ clone: () => ({}) }); }, URL, Promise });
+  assert.match(src, /CACHE_VERSION = 'v(\d+)'/);
+  assert.ok(Number(/CACHE_VERSION = 'v(\d+)'/.exec(src)[1]) >= 4);
+
+  const run = (req) => {
+    let responded = false;
+    handlers.fetch({ request: req, respondWith: () => { responded = true; } });
+    return responded;
+  };
+  const make = (url, extra = {}) => ({ url, method: 'GET', mode: 'no-cors', destination: '', headers: { has: (h) => Boolean(extra.range) && h === 'range', get: () => '' }, ...extra });
+  assert.equal(run(make('https://res.cloudinary.com/demo/video/upload/blog/narration/n_abc', { destination: 'audio' })), false);
+  assert.equal(run(make('https://site.test/static/audio/narration.mp3')), false);
+  assert.equal(run(make('https://site.test/x', { range: true })), false);
+  assert.equal(run(make('https://site.test/static/js/core/blog-audio.js')), true);
 });

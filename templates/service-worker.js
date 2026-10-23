@@ -1,6 +1,6 @@
 {% load static %}
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `gregloginsjr-${CACHE_VERSION}`;
 
 // Rutas que quieres precachear (app shell: solo estáticos, no hace falta HTML)
@@ -45,6 +45,20 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
   const request = event.request;
+
+  // Media (audio/video, Range requests) must go straight to the network:
+  // iOS Safari sends Range requests and rejects a full 200 answered from cache
+  // or an opaque cross-origin response (e.g. Cloudinary narration).
+  const destination = request.destination;
+  if (
+    request.headers.has('range') ||
+    destination === 'audio' ||
+    destination === 'video' ||
+    /\.(mp3|m4a|wav|ogg|flac|mp4|m4v|mov|webm)(\?|$)/i.test(request.url)
+  ) {
+    return;
+  }
+
   const acceptHeader = request.headers.get('accept') || '';
 
   const isHtmlRequest =
