@@ -1,101 +1,247 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Career · Greg Logins Jr{% endblock %}
+{% block title %}The Journey · Greg Logins Jr{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/career.css' %}">
+{% endblock %}
 
 {% block content %}
-<section class="page-section py-5">
-    <div class="container">
-        <p class="section-eyebrow mb-2 fade-in">CAREER</p>
-        <h1 class="section-title mb-4 fade-up">From Sodus to the World</h1>
-        <p class="section-lead mb-5 fade-up">
-            Greg Logins Jr built a 13-year professional basketball career across 9 countries after
-            an outstanding high school and college journey.
-        </p>
+<div class="career-journey">
+    <section class="journey-hero" aria-labelledby="journey-title">
+        <img
+            class="journey-hero-image"
+            src="{% static 'img/greg-hero-full.webp' %}"
+            alt="Greg Logins Jr on the basketball court"
+            width="1086"
+            height="1448"
+            fetchpriority="high">
+        <div class="journey-hero-shade" aria-hidden="true"></div>
+        <div class="container journey-hero-content">
+            <p class="journey-eyebrow">THE CAREER <span aria-hidden="true">/</span> GREG LOGINS JR</p>
+            <h1 id="journey-title">THE<br><span>JOURNEY</span></h1>
+            <p class="journey-hero-subtitle">From Sodus to the World</p>
+            <p class="journey-hero-copy">
+                From his early foundations in New York to a {{ profile.professional_seasons }}-season
+                professional career spanning {{ profile.countries }} countries, Greg built his
+                journey through discipline, adaptability, and an unwavering commitment to the game.
+            </p>
+            <a class="journey-link" href="#career-foundation">
+                EXPLORE THE JOURNEY <span aria-hidden="true">↓</span>
+            </a>
+        </div>
+        <span class="journey-hero-caption" aria-hidden="true">EVERY CHAPTER. EVERY CHALLENGE. EVERY STEP FORWARD.</span>
+    </section>
 
-        <!-- HIGH SCHOOL -->
-        <div class="mb-5">
-            <h2 class="about-subtitle mb-4 fade-in">High School</h2>
-            <div class="row g-4">
-                {% for exp in high_school %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="experience-card p-0 h-100 {% if forloop.counter <= 6 %}fade-up{% endif %}">
-                        {% if exp.image %}
-                        <div class="experience-image-wrapper {% if forloop.counter <= 6 %}fade-in{% endif %}">
-                            <img src="{{ exp.image.url }}" alt="{{ exp.team }}" class="experience-image">
-                        </div>
-                        {% endif %}
-                        <div class="p-4">
-                            <h5 class="fw-bold">{{ exp.team }}</h5>
-                            <p class="mb-1 small text-muted">{{ exp.years }}</p>
-                            <p class="mb-2 text-secondary">{{ exp.league }}</p>
-                            {% if exp.achievements %}
-                            <p class="small text-secondary">{{ exp.achievements }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
+    <section class="journey-overview" aria-labelledby="journey-overview-title">
+        <div class="container">
+            <div class="journey-section-heading journey-overview-heading">
+                <p class="journey-eyebrow">A CAREER WITHOUT BORDERS</p>
+                <h2 id="journey-overview-title">The journey, at a glance.</h2>
+            </div>
+            <dl class="journey-headline-stats">
+                {% for value, label in headline_stats %}
+                <div class="journey-headline-stat">
+                    <dt>{{ label }}</dt>
+                    <dd>{{ value }}</dd>
                 </div>
-                {% empty %}
-                <p>No high school records yet.</p>
                 {% endfor %}
+            </dl>
+        </div>
+    </section>
+
+    <section class="journey-section journey-foundation" id="career-foundation" aria-labelledby="foundation-title">
+        <div class="container">
+            <div class="journey-section-heading">
+                <p class="journey-eyebrow">WHERE IT BEGAN</p>
+                <h2 id="foundation-title">The foundation.</h2>
+                <p>Before the miles and the arenas, there was a place to learn the game—and a reason to keep going.</p>
+            </div>
+
+            <div class="foundation-columns">
+                <section class="foundation-chapter" aria-labelledby="high-school-title">
+                    <div class="foundation-heading">
+                        <span class="journey-index" aria-hidden="true">01</span>
+                        <h3 id="high-school-title">High School</h3>
+                    </div>
+                    {% for exp in high_school %}
+                    <article class="foundation-entry">
+                        {% if exp.image %}
+                        <img
+                            class="foundation-image"
+                            src="{{ exp.image.url }}"
+                            alt="{{ exp.team }} — {{ exp.years }}"
+                            width="960"
+                            height="540"
+                            loading="lazy"
+                            decoding="async">
+                        {% endif %}
+                        <div class="foundation-entry-copy">
+                            <p class="journey-entry-years">{{ exp.years }}</p>
+                            <h4>{{ exp.team }}</h4>
+                            {% if exp.league %}<p class="journey-entry-meta">{{ exp.league }}{% if exp.country %} · {{ exp.country }}{% endif %}</p>{% endif %}
+                            {% if exp.achievements %}<p class="journey-entry-description">{{ exp.achievements|truncatewords:48 }}</p>{% endif %}
+                        </div>
+                    </article>
+                    {% empty %}
+                    <p class="journey-empty">High school details will be added here.</p>
+                    {% endfor %}
+                </section>
+
+                <section class="foundation-chapter" aria-labelledby="college-title">
+                    <div class="foundation-heading">
+                        <span class="journey-index" aria-hidden="true">02</span>
+                        <h3 id="college-title">College</h3>
+                    </div>
+                    {% for exp in college %}
+                    <article class="foundation-entry">
+                        {% if exp.image %}
+                        <img
+                            class="foundation-image"
+                            src="{{ exp.image.url }}"
+                            alt="{{ exp.team }} — {{ exp.years }}"
+                            width="960"
+                            height="540"
+                            loading="lazy"
+                            decoding="async">
+                        {% endif %}
+                        <div class="foundation-entry-copy">
+                            <p class="journey-entry-years">{{ exp.years }}</p>
+                            <h4>{{ exp.team }}</h4>
+                            {% if exp.league %}<p class="journey-entry-meta">{{ exp.league }}{% if exp.country %} · {{ exp.country }}{% endif %}</p>{% endif %}
+                            {% if exp.achievements %}<p class="journey-entry-description">{{ exp.achievements|truncatewords:48 }}</p>{% endif %}
+                        </div>
+                    </article>
+                    {% empty %}
+                    <article class="foundation-entry foundation-entry-fallback">
+                        <div class="foundation-entry-copy">
+                            <p class="journey-entry-years">{{ profile.college_years }}</p>
+                            <h4>{{ profile.college }}</h4>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </section>
             </div>
         </div>
+    </section>
 
-        <!-- COLLEGE -->
-        <div class="mb-5">
-            <h2 class="about-subtitle mb-4 fade-in">College</h2>
-            <div class="row g-4">
-                {% for exp in college %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="experience-card p-0 h-100 {% if forloop.counter <= 6 %}fade-up{% endif %}">
-                        {% if exp.image %}
-                        <div class="experience-image-wrapper {% if forloop.counter <= 6 %}fade-in{% endif %}">
-                            <img src="{{ exp.image.url }}" alt="{{ exp.team }}" class="experience-image">
-                        </div>
-                        {% endif %}
-                        <div class="p-4">
-                            <h5 class="fw-bold">{{ exp.team }}</h5>
-                            <p class="mb-1 small text-muted">{{ exp.years }}</p>
-                            <p class="mb-2 text-secondary">{{ exp.league }}</p>
-                            {% if exp.achievements %}
-                            <p class="small text-secondary">{{ exp.achievements }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p>No college records yet.</p>
-                {% endfor %}
+    <section class="journey-section journey-professional" aria-labelledby="professional-title">
+        <div class="container">
+            <div class="journey-section-heading">
+                <p class="journey-eyebrow">NINE COUNTRIES. ONE GAME.</p>
+                <h2 id="professional-title">The professional journey.</h2>
+                <p>From first contract to each new court, the timeline moves from earliest to latest.</p>
             </div>
-        </div>
 
-        <!-- PROFESSIONAL -->
-        <div>
-            <h2 class="about-subtitle mb-4 fade-in">Professional</h2>
-            <div class="row g-4">
+            {% if professional %}
+            <ol class="career-timeline">
                 {% for exp in professional %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="experience-card p-0 h-100 {% if forloop.counter <= 6 %}fade-up{% endif %}">
+                <li class="career-timeline-item{% if exp.is_featured %} is-featured{% endif %}">
+                    <span class="career-timeline-marker" aria-hidden="true"></span>
+                    <article class="career-timeline-entry">
                         {% if exp.image %}
-                        <div class="experience-image-wrapper {% if forloop.counter <= 6 %}fade-in{% endif %}">
-                            <img src="{{ exp.image.url }}" alt="{{ exp.team }}" class="experience-image">
+                        <div class="career-timeline-media">
+                            <img
+                                src="{{ exp.image.url }}"
+                                alt="{{ exp.team }} — {{ exp.years }}"
+                                width="960"
+                                height="640"
+                                loading="lazy"
+                                decoding="async">
                         </div>
                         {% endif %}
-                        <div class="p-4">
-                            <h5 class="fw-bold">{{ exp.team }}</h5>
-                            <p class="mb-1 small text-muted">{{ exp.years }} — {{ exp.country }}</p>
-                            <p class="mb-2 text-secondary">{{ exp.league }}</p>
+                        <div class="career-timeline-copy">
+                            <p class="journey-entry-years">{{ exp.years }}</p>
+                            <h3>{{ exp.team }}</h3>
+                            <div class="career-entry-details">
+                                {% if exp.country %}<span>{{ exp.country }}</span>{% endif %}
+                                {% if exp.league %}<span>{{ exp.league }}</span>{% endif %}
+                            </div>
                             {% if exp.achievements %}
-                            <p class="small text-secondary">{{ exp.achievements }}</p>
+                            <p class="journey-entry-description">{{ exp.achievements|truncatewords:42 }}</p>
                             {% endif %}
+                            {% if exp.is_featured %}<span class="career-featured-label">A defining chapter</span>{% endif %}
                         </div>
-                    </div>
-                </div>
-                {% empty %}
-                <p>No professional records yet.</p>
+                    </article>
+                </li>
                 {% endfor %}
-            </div>
+            </ol>
+            {% else %}
+            <p class="journey-empty">Professional experience details will be added here.</p>
+            {% endif %}
         </div>
-    </div>
-</section>
+    </section>
+
+    <section class="journey-section journey-numbers" aria-labelledby="career-numbers-title">
+        <div class="container">
+            <div class="journey-section-heading">
+                <p class="journey-eyebrow">THE WORK, IN NUMBERS</p>
+                <h2 id="career-numbers-title">The numbers behind the journey.</h2>
+            </div>
+            <dl class="journey-performance-stats">
+                {% for value, label in performance_stats %}
+                <div class="journey-performance-stat">
+                    <dd>{{ value }}</dd>
+                    <dt>{{ label }}</dt>
+                </div>
+                {% endfor %}
+            </dl>
+            <p class="journey-stats-note">Career figures supplied for this profile.</p>
+        </div>
+    </section>
+
+    <section class="journey-section journey-profile" aria-labelledby="profile-title">
+        <div class="container journey-profile-layout">
+            <div class="journey-profile-intro">
+                <p class="journey-eyebrow">BEYOND THE GAME</p>
+                <h2 id="profile-title">A life shaped by the journey.</h2>
+                <p>Basketball is one part of Greg’s story. The lessons travel further: into education, fatherhood, and the lives he helps shape.</p>
+            </div>
+            <dl class="journey-facts">
+                <div class="journey-fact journey-fact-featured">
+                    <dt>Full name</dt>
+                    <dd>{{ profile.full_name }}</dd>
+                </div>
+                <div class="journey-fact">
+                    <dt>Born</dt>
+                    <dd>{{ profile.birth_date|date:"F j, Y" }} <span>{{ profile.birthplace }}</span></dd>
+                </div>
+                <div class="journey-fact">
+                    <dt>College</dt>
+                    <dd>{{ profile.college }} <span>{{ profile.college_years }}</span></dd>
+                </div>
+                <div class="journey-fact">
+                    <dt>Degrees</dt>
+                    <dd>{{ profile.degrees }}</dd>
+                </div>
+                <div class="journey-fact">
+                    <dt>Professional career</dt>
+                    <dd>{{ profile.professional_seasons }} seasons <span>{{ profile.countries }} countries</span></dd>
+                </div>
+                <div class="journey-fact">
+                    <dt>Known for</dt>
+                    <dd>{{ profile.known_for }}</dd>
+                </div>
+                <div class="journey-fact">
+                    <dt>Today</dt>
+                    <dd>{{ profile.current_role }}</dd>
+                </div>
+            </dl>
+        </div>
+    </section>
+
+    <section class="journey-closing" aria-labelledby="closing-title">
+        <div class="container">
+            <p class="journey-eyebrow">THE NEXT CHAPTER</p>
+            <h2 id="closing-title">More than a game.</h2>
+            <p>The lessons learned through competition continue to shape a life dedicated to leadership, education, and mentorship.</p>
+            <nav class="journey-closing-links" aria-label="Explore more">
+                <a href="{% url 'core:about' %}">Meet Greg <span aria-hidden="true">→</span></a>
+                <a href="{% url 'highlights:gallery' %}">Explore the highlights <span aria-hidden="true">→</span></a>
+                <a href="{% url 'core:contact' %}">Get in touch <span aria-hidden="true">→</span></a>
+            </nav>
+        </div>
+    </section>
+</div>
 {% endblock %}

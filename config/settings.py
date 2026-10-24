@@ -253,6 +253,11 @@ UNFOLD = {
                         "link": reverse_lazy("admin:career_experience_changelist"),
                     },
                     {
+                        "title": _("Career profile & statistics"),
+                        "icon": "query_stats",
+                        "link": reverse_lazy("admin:career_careerprofile_change", args=[1]),
+                    },
+                    {
                         "title": _("Highlights"),
                         "icon": "movie",
                         "link": reverse_lazy("admin:highlights_highlight_changelist"),

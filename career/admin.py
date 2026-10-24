@@ -6,7 +6,7 @@ from unfold.contrib.filters.admin import FieldTextFilter
 from unfold.decorators import action
 from unfold.enums import ActionVariant
 
-from .models import Experience
+from .models import CareerProfile, Experience
 
 
 @admin.register(Experience)
@@ -21,9 +21,11 @@ class ExperienceAdmin(ModelAdmin):
     list_display = (
         "team",
         "category_badge",
+        "start_year",
         "country",
         "league",
         "years",
+        "is_featured",
         "achievements_preview",
         "image_thumb",
     )
@@ -35,13 +37,30 @@ class ExperienceAdmin(ModelAdmin):
         ("team", FieldTextFilter),
         "category",
         "country",
+        "is_featured",
     ]
 
-    ordering = ("-years",) 
     list_per_page = 25
 
     # Bulk actions
     actions = ["clear_image"]
+
+    fieldsets = (
+        (
+            "Experience",
+            {
+                "fields": (
+                    "category",
+                    "team",
+                    "years",
+                    "start_year",
+                    "is_featured",
+                )
+            },
+        ),
+        ("Competition", {"fields": ("country", "league", "achievements")}),
+        ("Media", {"fields": ("image",)}),
+    )
 
     @action(
         description="Remove experience image",
@@ -91,3 +110,57 @@ class ExperienceAdmin(ModelAdmin):
                 obj.team,
             )
         return "-"
+
+
+@admin.register(CareerProfile)
+class CareerProfileAdmin(ModelAdmin):
+    compressed_fields = True
+    warn_unsaved_form = True
+
+    fieldsets = (
+        (
+            "Career at a glance",
+            {
+                "description": "Supplied career totals shown on the Career page.",
+                "fields": (
+                    "professional_seasons",
+                    "countries",
+                    "teams",
+                ),
+            },
+        ),
+        (
+            "Performance statistics",
+            {
+                "fields": (
+                    "games",
+                    "minutes",
+                    "points",
+                    "rebounds",
+                    "assists",
+                    "steals",
+                )
+            },
+        ),
+        (
+            "Quick facts",
+            {
+                "fields": (
+                    "full_name",
+                    "birth_date",
+                    "birthplace",
+                    "college",
+                    "college_years",
+                    "degrees",
+                    "known_for",
+                    "current_role",
+                )
+            },
+        ),
+    )
+
+    def has_add_permission(self, request):
+        return not CareerProfile.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
