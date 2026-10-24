@@ -1,0 +1,23 @@
+/* CONTACT PAGE */
+.contact-hero{
+    background:
+        radial-gradient(circle at center right, rgba(217,164,65,.2), transparent 70%),
+        url("../../img/greg-contact-bg.webp") center top / cover no-repeat;
+    color:var(--text-main);
+    position:relative;
+    min-height:40vh;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+}
+
+.contact-hero .overlay{ position:absolute; inset:0; background:linear-gradient(to right, rgba(0,0,0,.9) 10%, rgba(0,0,0,.6) 80%); z-index:1;}
+.contact-section{ background-color:#0d0d0d; color:var(--text-main); }
+.contact-info li{
+    margin-bottom:1rem; font-size:1rem; color:rgba(255,255,255,.85);
+}
+.contact-info i{ color:var(--gold); margin-right:10px; font-size:1.1rem; }
+.contact-info a{ color:var(--gold-soft); text-decoration:none; }
+.contact-info a:hover{ color:var(--gold); text-decoration:underline; }
+.contact-form .form-control{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1); color:var(--text-main); border-radius:.5rem; padding:.9rem 1rem; transition:all .2s ease;}
+.contact-form .form-control:focus{ border-color:var(--gold); box-shadow:0 0 10px rgba(217,164,65,.25); background:rgba(255,255,255,.12);}

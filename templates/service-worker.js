@@ -1,55 +1,70 @@
+
 {% load static %}
 
-const CACHE_VERSION = 'v4';
-const CACHE_NAME = `gregloginsjr-${CACHE_VERSION}`;
+const CACHE_VERSION = 'v5';
+const CACHE_PREFIX = 'gregloginsjr-';
+const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`;
 
-// Rutas que quieres precachear (app shell: solo estáticos, no hace falta HTML)
+// Precache shared application assets.
+// Page-specific stylesheets are cached when visited.
 const URLS_TO_CACHE = [
+  // Global CSS
   '{% static "css/main.css" %}',
-  '{% static "css/highlights.css" %}',
+  '{% static "css/animations.css" %}',
+  '{% static "css/layout.css" %}',
+  '{% static "css/components.css" %}',
+
+  // Shared JavaScript
   '{% static "js/core/stats.js" %}',
   '{% static "js/core/animate-onload.js" %}',
   '{% static "js/core/share.js" %}',
-  '{% static "js/core/highlights-archive.js" %}',
+
+  // Branding
   '{% static "img/greg-logo.png" %}',
 ];
 
-// INSTALL: precache básico
+// INSTALL
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(URLS_TO_CACHE);
     })
   );
+
   self.skipWaiting();
 });
 
-// ACTIVATE: limpia cachés antiguas
+// ACTIVATE
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
+    caches.keys()
+      .then((keys) =>
+        Promise.all(
+          keys
+            .filter(
+              (key) =>
+                key.startsWith(CACHE_PREFIX) &&
+                key !== CACHE_NAME
+            )
+            .map((key) => caches.delete(key))
+        )
       )
-    )
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// FETCH: network-first para HTML, cache-first para assets
+// FETCH
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-
   const request = event.request;
 
-  // Media (audio/video, Range requests) must go straight to the network:
-  // iOS Safari sends Range requests and rejects a full 200 answered from cache
-  // or an opaque cross-origin response (e.g. Cloudinary narration).
+  if (request.method !== 'GET') {
+    return;
+  }
+
+  // Safari audio/video compatibility.
+  // Never intercept Range requests or media files.
   const destination = request.destination;
+
   if (
     request.headers.has('range') ||
     destination === 'audio' ||
@@ -62,40 +77,68 @@ self.addEventListener('fetch', (event) => {
   const acceptHeader = request.headers.get('accept') || '';
 
   const isHtmlRequest =
-    request.mode === 'navigate' || acceptHeader.includes('text/html');
+    request.mode === 'navigate' ||
+    acceptHeader.includes('text/html');
 
   if (isHtmlRequest) {
-    // Navegación/HTML -> network-first
+    // Network-first for HTML.
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const respClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(request, respClone);
-          });
+          if (response.ok && response.type === 'basic') {
+            const responseClone = response.clone();
+
+            event.waitUntil(
+              caches.open(CACHE_NAME).then((cache) =>
+                cache.put(request, responseClone)
+              )
+            );
+          }
+
           return response;
         })
-        .catch(() => {
-          // Si no hay red, intenta servir la versión cacheada
-          return caches.match(request);
+        .catch(async () => {
+          const cachedResponse = await caches.match(request);
+
+          return cachedResponse || Response.error();
         })
     );
-  } else {
-    // Assets (CSS, JS, imágenes) -> cache-first
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) {
-          return cached;
-        }
-        return fetch(request)
-          .then((response) => {
-            const respClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, respClone);
-            });
-            return response;
-          });
-      })
-    );
+
+    return;
   }
+
+  // Only cache same-origin static resources.
+  const url = new URL(request.url);
+
+  const isSameOrigin = url.origin === self.location.origin;
+
+  const isStaticAsset =
+    ['style', 'script', 'image', 'font'].includes(destination);
+
+  if (!isSameOrigin || !isStaticAsset) {
+    return;
+  }
+
+  // Cache-first for static assets.
+  event.respondWith(
+    caches.match(request).then(async (cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
+      const response = await fetch(request);
+
+      if (response.ok && response.type === 'basic') {
+        const responseClone = response.clone();
+
+        event.waitUntil(
+          caches.open(CACHE_NAME).then((cache) =>
+            cache.put(request, responseClone)
+          )
+        );
+      }
+
+      return response;
+    })
+  );
 });

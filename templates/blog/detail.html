@@ -3,6 +3,10 @@
 
 {% block title %}{{ post.title }} · Blog · Greg Logins Jr{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/blog.css' %}">
+{% endblock %}
+
 {% block content %}
 <section class="page-section blog-detail-section py-5 fade-in">
     {% if post.narration_audio or legacy_multimedia %}

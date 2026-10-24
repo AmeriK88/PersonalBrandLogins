@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Blog · Greg Logins Jr{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/blog.css' %}">
+{% endblock %}
 
 {% block content %}
 <section class="page-section py-5">

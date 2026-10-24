@@ -1,0 +1,41 @@
+/* === Animate On Load (optimizadas) === */
+.fade-up,.fade-in,.slide-left,.slide-right{
+  --stagger: var(--a-stagger);
+  opacity:0;
+  will-change:opacity,transform;
+}
+.fade-up{
+  transform:translateY(16px);
+  transition:opacity var(--a-dur) var(--a-ease) var(--stagger),
+             transform var(--a-dur) var(--a-ease) var(--stagger);
+}
+.fade-in{
+  transition:opacity var(--a-dur) var(--a-ease) var(--stagger);
+}
+.slide-left{
+  transform:translateX(-16px);
+  transition:opacity var(--a-dur) var(--a-ease) var(--stagger),
+             transform var(--a-dur) var(--a-ease) var(--stagger);
+}
+.slide-right{
+  transform:translateX(16px);
+  transition:opacity var(--a-dur) var(--a-ease) var(--stagger),
+             transform var(--a-dur) var(--a-ease) var(--stagger);
+}
+.animate-in{ opacity:1; transform:none; }
+
+/* Delays utilitarias */
+.delay-1{ --stagger:.2s }
+.delay-2{ --stagger:.4s }
+.delay-3{ --stagger:.6s }
+.delay-4{ --stagger:.8s }
+.delay-5{ --stagger:1s }
+
+/* Respeto a reduce motion */
+@media (prefers-reduced-motion: reduce){
+  .fade-up,.fade-in,.slide-left,.slide-right{
+    transition:none !important;
+    transform:none !important;
+    opacity:1 !important;
+  }
+}

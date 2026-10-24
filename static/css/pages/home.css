@@ -1,0 +1,88 @@
+/* HERO */
+.hero-landing{
+    position:relative;
+    min-height:calc(100vh - 80px);
+    padding:6rem 0 5rem;
+    display:flex;
+    align-items:center;
+    background-color:#000;
+    background-image:
+        linear-gradient(
+            to right,
+            rgba(0,0,0,.96) 0%,
+            rgba(0,0,0,.92) 35%,
+            rgba(0,0,0,.80) 55%,
+            rgba(0,0,0,.45) 75%,
+            rgba(0,0,0,.25) 85%,
+            rgba(0,0,0,0) 100%
+        ),
+        url("../../img/greg-hero-full.webp");
+    background-size:100% 100%, auto 100%;
+    background-position:left top, right center;
+    background-repeat:no-repeat, no-repeat;
+}
+.hero-title{
+    font-size:clamp(2.8rem,4vw,3.8rem);
+    letter-spacing:.12em;
+    font-weight:700;
+}
+.hero-quote{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:1.6rem;
+    color:var(--gold-soft);
+}
+.hero-subtext{ font-size:.9rem; color:var(--muted); }
+
+
+@media (max-width: 992px) {
+  .hero-title {
+    font-size: clamp(2.1rem, 5.9vw, 2.9rem);
+    line-height: 1.15;
+  }
+
+  .hero-quote {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-landing {
+    padding: 4rem 0 4rem;
+    background-size: cover;
+    background-position: left top;
+  }
+
+  .hero-title {
+    font-size: clamp(1.9rem, 7vw, 2.4rem);
+    letter-spacing: .08em;
+  }
+
+  .hero-quote {
+    font-size: 1.15rem;
+  }
+
+  .hero-subtext {
+    font-size: .85rem;
+  }
+
+  /* Evita que botones se rompan en varias l�neas */
+  .d-flex.flex-wrap.gap-3 a {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem;
+    line-height: 1.2;
+  }
+
+  .hero-quote {
+    font-size: 1rem;
+  }
+
+  .hero-subtext {
+    font-size: .8rem;
+  }
+}

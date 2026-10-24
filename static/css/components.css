@@ -1,0 +1,131 @@
+/* BOTONES */
+.btn-gold,.btn-outline-gold,.btn-gold-ghost{
+    padding:.85rem 2.3rem;
+    border-radius:0;
+    text-transform:uppercase;
+    font-size:.82rem;
+    letter-spacing:.18em;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    background:transparent;
+    transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.btn-gold:hover,.btn-outline-gold:hover,.btn-gold-ghost:hover{
+    background:var(--gold);
+    color:#000;
+}
+
+/* Shared and legacy card styles retained during the architecture refactor. */
+.experience-card,.blog-card,.highlight-card{
+    border-radius:.75rem; overflow:hidden;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    display:flex; flex-direction:column;
+    transition: transform .25s ease, box-shadow .25s ease, outline-color .25s ease;
+    outline:1px solid transparent;
+}
+.experience-card:hover,.blog-card:hover,.highlight-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 0 10px rgba(217,164,65,.3);
+}
+
+/* Legacy Career card styles retained for compatibility. */
+.experience-image-wrapper{ max-height:300px; overflow:hidden; }
+
+/* Legacy Highlights card styles retained for compatibility. */
+.highlight-card{ position:relative; cursor:pointer; }
+.highlight-image, .experience-image, .blog-card-image {
+    width: 100%;
+    height: 300px;          /* ajusta la altura a tu gusto */
+    object-fit: cover;      /* aquí está el efecto cover */
+    display: block;
+}
+.highlight-overlay{
+    position:absolute; inset:auto 0 0 0; height:100%;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding:1rem;
+    background:linear-gradient(to top, rgba(0,0,0,.7), rgba(0,0,0,0));
+    opacity:0; transition:opacity .3s ease;
+}
+.highlight-card:hover .highlight-overlay{ opacity:1; }
+.highlight-overlay h5{ color:var(--text-main); font-weight:600; margin-bottom:.25rem; }
+.highlight-overlay p{ color:rgba(255,255,255,.8); font-size:.875rem; }
+
+/* Cookie banner (modo oscuro, bottom fixed) */
+.cookie-banner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1050;
+    background: rgba(15, 23, 42, 0.98);
+    color: var(--text-main);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+}
+
+.cookie-banner-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.cookie-banner a {
+    color: var(--btn-gold-btn);
+}
+
+.cookie-banner-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.btn-gold {
+    background: var(--btn-gold-btn);
+    color: #111827;
+    border: none;
+}
+
+.btn-gold:hover {
+    background: var(--btn-gold-hover);
+    color: #020617;
+}
+
+
+
+@media (max-width: 992px) {
+  .btn-gold,
+  .btn-outline-gold,
+  .btn-gold-ghost {
+    padding: .75rem 1.7rem;
+    font-size: .78rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-gold,
+  .btn-outline-gold,
+  .btn-gold-ghost {
+    padding: .7rem 1.5rem;
+    font-size: .75rem;
+  }
+
+  .cookie-banner-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-gold,
+  .btn-outline-gold,
+  .btn-gold-ghost {
+    padding: .6rem 1.2rem;
+    font-size: .72rem;
+    letter-spacing: .14em;
+  }
+}

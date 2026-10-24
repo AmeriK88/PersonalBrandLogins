@@ -3,6 +3,10 @@
 
 {% block title %}Greg Logins Jr · Professional Basketball Player / Coach{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/home.css' %}">
+{% endblock %}
+
 {% block content %}
     <!-- PWA Install Banner -->
     <div id="pwa-install-banner" class="pwa-install d-none">
@@ -62,4 +66,3 @@
 {% block extra_js %}
 <script src="{% static 'js/core/pwa-install.js' %}" defer></script>
 {% endblock %}
-

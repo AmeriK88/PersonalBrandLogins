@@ -1,6 +1,11 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ page.title }} · Greg Logins Jr{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/pages/family.css' %}">
+{% endblock %}
 
 {% block content %}
 <section class="family-section">
