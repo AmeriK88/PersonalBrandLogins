@@ -1,0 +1,21 @@
+{% if exp.achievements %}
+<div class="career-story">
+    {% if exp.achievements|wordcount > preview_words %}
+    <button
+        class="journey-story-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="career-story-full-{{ exp.pk }}"
+        data-story-toggle
+        hidden>Read full story</button>
+    <div class="journey-story-preview" data-story-preview hidden>
+        <div class="journey-entry-description">{{ exp.achievements|truncatewords:preview_words|linebreaks }}</div>
+    </div>
+    {% endif %}
+    <div
+        class="journey-story-full{% if exp.achievements|wordcount <= preview_words %} journey-entry-description{% endif %}"
+        {% if exp.achievements|wordcount > preview_words %}id="career-story-full-{{ exp.pk }}" data-story-full{% endif %}>
+        {{ exp.achievements|linebreaks }}
+    </div>
+</div>
+{% endif %}

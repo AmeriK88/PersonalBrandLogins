@@ -81,7 +81,7 @@
                             <p class="journey-entry-years">{{ exp.years }}</p>
                             <h4>{{ exp.team }}</h4>
                             {% if exp.league %}<p class="journey-entry-meta">{{ exp.league }}{% if exp.country %} · {{ exp.country }}{% endif %}</p>{% endif %}
-                            {% if exp.achievements %}<p class="journey-entry-description">{{ exp.achievements|truncatewords:48 }}</p>{% endif %}
+                            {% include "career/_experience_story.html" with preview_words=48 %}
                         </div>
                     </article>
                     {% empty %}
@@ -110,7 +110,7 @@
                             <p class="journey-entry-years">{{ exp.years }}</p>
                             <h4>{{ exp.team }}</h4>
                             {% if exp.league %}<p class="journey-entry-meta">{{ exp.league }}{% if exp.country %} · {{ exp.country }}{% endif %}</p>{% endif %}
-                            {% if exp.achievements %}<p class="journey-entry-description">{{ exp.achievements|truncatewords:48 }}</p>{% endif %}
+                            {% include "career/_experience_story.html" with preview_words=48 %}
                         </div>
                     </article>
                     {% empty %}
@@ -158,9 +158,7 @@
                                 {% if exp.country %}<span>{{ exp.country }}</span>{% endif %}
                                 {% if exp.league %}<span>{{ exp.league }}</span>{% endif %}
                             </div>
-                            {% if exp.achievements %}
-                            <p class="journey-entry-description">{{ exp.achievements|truncatewords:42 }}</p>
-                            {% endif %}
+                            {% include "career/_experience_story.html" with preview_words=42 %}
                             {% if exp.is_featured %}<span class="career-featured-label">A defining chapter</span>{% endif %}
                         </div>
                     </article>
@@ -244,4 +242,8 @@
         </div>
     </section>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/career-story.js' %}" defer></script>
 {% endblock %}

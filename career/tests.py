@@ -69,6 +69,55 @@ class CareerOverviewTests(TestCase):
         self.assertContains(response, "A Team Without Optional Details")
         self.assertNotContains(response, "No professional experience records")
 
+    def test_long_stories_are_expandable_for_every_experience_category(self):
+        complete_story = (
+            "Early work develops discipline. " * 50
+            + "\n\nThe final complete sentence remains available."
+        )
+        experiences = [
+            Experience.objects.create(
+                category=category,
+                team=f"{category} story",
+                years="2010–2011",
+                start_year=2010,
+                achievements=complete_story,
+            )
+            for category in ("high_school", "college", "professional")
+        ]
+
+        response = self.client.get(reverse("career:overview"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            "<p>The final complete sentence remains available.</p>",
+            html=True,
+        )
+        for experience in experiences:
+            self.assertContains(
+                response,
+                f'aria-controls="career-story-full-{experience.pk}"',
+            )
+        self.assertContains(response, 'aria-expanded="false"')
+        self.assertContains(response, 'data-story-toggle')
+        self.assertContains(response, "Read full story")
+        self.assertContains(response, "data-story-full")
+        self.assertContains(response, "hidden>Read full story</button>")
+
+    def test_short_stories_are_complete_without_expansion_controls(self):
+        Experience.objects.create(
+            category="college",
+            team="A concise story",
+            years="2007–2011",
+            achievements="Concise but complete.",
+        )
+
+        response = self.client.get(reverse("career:overview"))
+
+        self.assertContains(response, "<p>Concise but complete.</p>", html=True)
+        self.assertNotContains(response, "data-story-toggle")
+        self.assertNotContains(response, "Read full story")
+
     def test_missing_profile_uses_supplied_defaults(self):
         CareerProfile.objects.filter(pk=1).delete()
 

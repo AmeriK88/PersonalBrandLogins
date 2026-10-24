@@ -295,6 +295,47 @@
     line-height: 1.8;
 }
 
+.career-journey [hidden] {
+    display: none !important;
+}
+
+.career-journey .journey-story-toggle {
+    display: inline-flex;
+    align-items: center;
+    margin-top: .75rem;
+    padding: .25rem 0;
+    border: 0;
+    border-bottom: 1px solid rgba(217, 164, 65, .55);
+    background: transparent;
+    color: var(--journey-gold);
+    cursor: pointer;
+    font: inherit;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.career-journey .journey-story-toggle:hover {
+    color: #f3d99c;
+}
+
+.career-journey .journey-story-toggle:focus-visible {
+    outline: 2px solid var(--journey-gold);
+    outline-offset: 4px;
+}
+
+.career-journey .journey-story-preview .journey-entry-description,
+.career-journey .journey-story-full {
+    margin-top: 1rem;
+}
+
+.career-journey .journey-story-full p:last-child,
+.career-journey .journey-story-preview p:last-child {
+    margin-bottom: 0;
+}
+
 .career-journey .journey-empty {
     padding: 1.4rem;
     border: 1px solid var(--journey-line);
